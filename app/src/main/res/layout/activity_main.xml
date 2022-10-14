@@ -16,9 +16,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="DAS IST EIN KRASSER COMMIT"
+        android:id="@+id/button1"
         ></Button>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="noch ein krasser button"
+        android:id="@+id/button2"
+        tools:layout_editor_absoluteX="63dp"
+        tools:layout_editor_absoluteY="83dp"></Button>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

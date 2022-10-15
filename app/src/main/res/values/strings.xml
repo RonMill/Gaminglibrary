@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Gaminglibrary</string>
+    <string name="teilen">Teilen</string>
+    <string name="bewerten">Bewerten</string>
+    <string name="search">Suchen</string>
+    <string name="edit">Editieren</string>
+    <string name="add">Hinzufügen</string>
+    <string name="delete">Löschen</string>
+    <string name="settings">Einstellungen</string>
+    <string name="cast">Chromecast</string>
+
 </resources>

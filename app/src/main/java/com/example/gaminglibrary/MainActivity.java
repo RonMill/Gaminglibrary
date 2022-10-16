@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 public class MainActivity extends AppCompatActivity {
 
     ListenDatenbank listenDatenbank;
-    BuchDatenbank db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +16,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listenDatenbank = new ListenDatenbank(this);
-        db = new BuchDatenbank(this);
     }
 
     @Override

@@ -33,7 +33,15 @@
                 android:title="@string/delete"></item>
         </menu>
     </item>
-    <item android:id="@+id/SETTINGS" android:title="@string/settings" android:icon="@drawable/ic_settings_white_48dp" app:showAsAction="ifRoom"></item>
-    <item android:id="@+id/CAST" android:title="@string/cast" android:icon="@drawable/ic_cast_white_48dp" app:showAsAction="never"></item>
+    <item
+        android:id="@+id/SETTINGS"
+        android:icon="@drawable/ic_settings_white_48dp"
+        android:title="@string/settings"
+        app:showAsAction="ifRoom"></item>
+    <item
+        android:id="@+id/CAST"
+        android:icon="@drawable/ic_cast_white_48dp"
+        android:title="@string/cast"
+        app:showAsAction="never"></item>
 
 </menu>

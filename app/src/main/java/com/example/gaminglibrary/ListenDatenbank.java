@@ -2,6 +2,7 @@ package com.example.gaminglibrary;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -115,6 +116,7 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         db.insert(TABELLE_LISTE, null, neueZeile);
     }
 
+    //TODO: Man kann nur Tags anlegen wenn man gleichzeitig ein Spiel hinzufügt, vielleicht etwas doof
     public void insertTag(int tagID, int spieleId, String tagName) {
         ContentValues neueZeile = new ContentValues();
         neueZeile.put(SPALTE_TAG_ID, tagID);
@@ -123,4 +125,33 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABELLE_LISTE, null, neueZeile);
     }
+
+    public Cursor selectAllSpiele() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor meinZeiger = db.rawQuery("SELECT * FROM " + TABELLE_SPIEL, null);
+        meinZeiger.moveToFirst();
+        return meinZeiger;
+    }
+
+    public Cursor selectTagsFromSpiel(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor meinZeiger = db.rawQuery("SELECT * FROM " + TABELLE_TAG + " WHERE " + SPALTE_SPIELE + " = " + id, null);
+        meinZeiger.moveToFirst();
+        return meinZeiger;
+    }
+
+    public Cursor selectKategorieFromSpiel(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor meinZeiger = db.rawQuery("SELECT * FROM " + TABELLE_KATEGORIE + " WHERE " + SPALTE_SPIEL + " = " + id, null);
+        meinZeiger.moveToFirst();
+        return meinZeiger;
+    }
+
+    /*
+    public void updateTag(int tagID, String newText) {
+        SQLiteDatabase db = getReadableDatabase();
+        db.execSQL("UPDATE " + TABELLE_TAG + " SET " + SPALTE_TAG_NAME + " = " + newText + " WHERE " + SPALTE_TAG_ID + " = " + tagID, null);
+    }
+     */
+
 }

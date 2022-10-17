@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
         listenDatenbank.insertKategorie(1,1,"MMOGA");
         listenDatenbank.insertTag(1,1,"Killergame");
 
+
+
     }
 
     @Override

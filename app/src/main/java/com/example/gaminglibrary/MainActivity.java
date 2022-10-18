@@ -2,6 +2,9 @@ package com.example.gaminglibrary;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -13,12 +16,14 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.example.gaminglibrary.model.ListModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    List<String> liste = new ArrayList<>();
+    List<ListModel> allLists = new ArrayList<>();
 
     ListenDatenbank listenDatenbank;
 
@@ -29,15 +34,13 @@ public class MainActivity extends AppCompatActivity {
 
         listenDatenbank = new ListenDatenbank(this);
         //db = new BuchDatenbank(this);
-        listenDatenbank.insertListe(1,"testliste");
-        listenDatenbank.insertSpiel(1,"League", 1.33F,3,1);
+        listenDatenbank.insertListe(1, "testliste");
+        listenDatenbank.insertSpiel(1, "League", 1.33F, 3, 1);
         Log.d("HS_KL", "DB_INSERT_GAME");
-        listenDatenbank.insertKategorie(1,1,"MMOGA");
-        listenDatenbank.insertTag(1,1,"Killergame");
+        listenDatenbank.insertKategorie(1, 1, "MMOGA");
+        listenDatenbank.insertTag(1, 1, "Killergame");
+        refreshAllLists();
 
-        liste.add("Woof");
-        liste.add("Miau");
-        liste.add("Hund");
     }
 
     @Override
@@ -47,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
 
         SubMenu subMenu = menu.findItem(R.id.MY_LISTS).getSubMenu();
         subMenu.clear();
-        for (String s : liste) {
-            subMenu.add(0, R.id.EDIT, Menu.NONE, s);
+        for (ListModel s : allLists) {
+            subMenu.add(0, s.getId(), Menu.NONE, s.getName());
         }
-
+        subMenu.add(0, allLists.size() + 1, Menu.NONE, "Liste hinzufügen");
         return true;
     }
 
@@ -78,5 +81,23 @@ public class MainActivity extends AppCompatActivity {
         }
         */
         return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressLint("Range")
+    private void refreshAllLists() {
+        //TODO: Cursor richtig auslesen und die Listen, welche returned werden, in eine ArrayList eintragen
+
+        Log.d("HS_KL", "spacken");
+        Cursor c1 = listenDatenbank.selectAllLists();
+        Log.d("HS_KL", DatabaseUtils.dumpCursorToString(c1));
+        int x = c1.getInt(c1.getColumnIndexOrThrow("listeid"));
+        Log.d("HS_KL", String.valueOf(x));
+
+        /*try (Cursor cursor = listenDatenbank.selectAllLists()) {
+            while (cursor.moveToNext()) {
+                Log.d("HS_KL", String.valueOf(cursor.getInt(cursor.getColumnIndex("listid"))));
+            }
+        }*/
+        allLists.add(new ListModel(allLists.size() + 1, "Liste hinzufügen", null));
     }
 }

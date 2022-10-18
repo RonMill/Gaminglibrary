@@ -134,6 +134,13 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         return meinZeiger;
     }
 
+    public Cursor selectAllLists() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor meinZeiger = db.rawQuery("SELECT * FROM " + TABELLE_LISTE, null);
+        meinZeiger.moveToFirst();
+        return meinZeiger;
+    }
+
     public Cursor selectTagsFromSpiel(int id) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor meinZeiger = db.rawQuery("SELECT * FROM " + TABELLE_TAG + " WHERE " + SPALTE_SPIELE + " = " + id, null);

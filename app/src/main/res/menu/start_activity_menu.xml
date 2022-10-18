@@ -1,47 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <!-- TODO: ITEM=SUCHEN, ITEM=EDITIEREN (inkl. ITEM=HINZUFÜGEN, ITEM=LÖSCHEN), ITEM=EINSTELLEN und ITEM=CAST -->
     <!-- Info-Bilder:
     Suchen = @drawable/ic_search_white_48dp
     Editieren = @drawable/ic_mode_edit_white_48dp
     Hinzufügen = @drawable/ic_add_black_48dp
     Löschen = @drawable/ic_delete_black_48dp
-    Einstellen = @drawable/ic_settings_white_48dp
-    Cast = @drawable/ic_cast_white_48dp -->
-
+    Einstellen = @drawable/ic_settings_white_48dp -->
 
     <item
-        android:id="@+id/SEARCH"
-        android:icon="@drawable/ic_search_white_48dp"
-        android:title="@string/search"
-        app:showAsAction="always"></item>
+        android:id="@+id/MY_LISTS"
+        android:icon="@android:drawable/arrow_down_float"
+        android:title="@string/my_lists"
+        app:showAsAction="always">
+        <menu>
+            <item android:id="@+id/item1" android:title="Placeholder"></item>
+        </menu>
+    </item>
+
     <item
         android:id="@+id/EDIT"
         android:icon="@drawable/ic_mode_edit_white_48dp"
         android:title="@string/edit"
-        app:showAsAction="always">
-        <menu>
-            <item
-                android:id="@+id/ADD"
-                android:icon="@drawable/ic_add_black_48dp"
-                android:title="@string/add"></item>
-            <item
-                android:id="@+id/DELETE"
-                android:icon="@drawable/ic_delete_black_48dp"
-                android:title="@string/delete"></item>
-        </menu>
-    </item>
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/TAGS"
+        android:title="@string/tags"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/STATISTIC"
+        android:title="@string/statistic"
+        app:showAsAction="never" />
     <item
         android:id="@+id/SETTINGS"
-        android:icon="@drawable/ic_settings_white_48dp"
-        android:title="@string/settings"
-        app:showAsAction="ifRoom"></item>
+        android:title="@string/option"
+        app:showAsAction="never" />
     <item
-        android:id="@+id/CAST"
-        android:icon="@drawable/ic_cast_white_48dp"
-        android:title="@string/cast"
-        app:showAsAction="never"></item>
+        android:id="@+id/IMPORT"
+        android:title="@string/import_list"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/EXPORT"
+        android:title="@string/export"
+        app:showAsAction="never" />
 
 </menu>

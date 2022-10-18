@@ -58,6 +58,7 @@ public class ListModel {
         return "ListModel{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", games=" + games.toString() +
                 '}';
     }
 }

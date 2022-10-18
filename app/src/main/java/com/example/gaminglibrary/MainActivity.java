@@ -16,6 +16,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
     List<ListModel> allLists = new ArrayList<>();
 
+    //TODO: Später bei verlassen der App currentList in sharedPref saven
+    ListModel currentList;
     ListenDatenbank listenDatenbank;
 
     @Override
@@ -35,12 +38,26 @@ public class MainActivity extends AppCompatActivity {
         listenDatenbank = new ListenDatenbank(this);
         //db = new BuchDatenbank(this);
         listenDatenbank.insertListe(1, "testliste");
-        listenDatenbank.insertSpiel(1, "League", 1.33F, 3, 1);
-        Log.d("HS_KL", "DB_INSERT_GAME");
+        listenDatenbank.insertListe(2, "zweiteListe");
+        listenDatenbank.insertListe(3, "DÖNERR");
+        listenDatenbank.insertSpiel(1, "League1", 1.33F, 3, 1);
+        listenDatenbank.insertSpiel(2, "League2", 1.33F, 3, 1);
+        listenDatenbank.insertSpiel(3, "League3", 1.33F, 3, 1);
+        listenDatenbank.insertSpiel(4, "League4", 1.33F, 3, 1);
+        listenDatenbank.insertSpiel(5, "League5", 1.33F, 3, 1);
         listenDatenbank.insertKategorie(1, 1, "MMOGA");
         listenDatenbank.insertTag(1, 1, "Killergame");
+
         refreshAllLists();
 
+        if (allLists.isEmpty()) {
+            //TODO: DIALOG NOCH ERSTELLEN UND HIER ÖFFNEN
+        } else {
+            currentList = allLists.get(0);
+        }
+
+
+        Log.d("HS_KL", currentList.toString());
     }
 
     @Override
@@ -59,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+
 
         /*
         updateSpieleListe(item.getItemId());
@@ -85,19 +104,40 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("Range")
     private void refreshAllLists() {
-        //TODO: Cursor richtig auslesen und die Listen, welche returned werden, in eine ArrayList eintragen
 
-        Log.d("HS_KL", "spacken");
-        Cursor c1 = listenDatenbank.selectAllLists();
-        Log.d("HS_KL", DatabaseUtils.dumpCursorToString(c1));
-        int x = c1.getInt(c1.getColumnIndexOrThrow("listeid"));
-        Log.d("HS_KL", String.valueOf(x));
+        try (Cursor cursor = listenDatenbank.selectAllLists()) {
+            if (cursor.getCount() > 0) {
+                do {
+                    ArrayList<GameModel> spieleListe = new ArrayList<>();
+                    int listeid = cursor.getInt(cursor.getColumnIndexOrThrow("listeid"));
+                    String titel = cursor.getString(cursor.getColumnIndexOrThrow("titel"));
+                    Cursor cursor1 = listenDatenbank.selectAllSpieleFromListe(listeid);
 
-        /*try (Cursor cursor = listenDatenbank.selectAllLists()) {
-            while (cursor.moveToNext()) {
-                Log.d("HS_KL", String.valueOf(cursor.getInt(cursor.getColumnIndex("listid"))));
+                    if (cursor1.getCount() > 0) {
+                        do {
+                            int spielID = cursor1.getInt(cursor1.getColumnIndexOrThrow("spielid"));
+                            String spielname = cursor1.getString(cursor1.getColumnIndexOrThrow("spielname"));
+                            float preis = cursor1.getFloat(cursor1.getColumnIndexOrThrow("preis"));
+                            int bewertung = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
+                            int listID = cursor1.getInt(cursor1.getColumnIndexOrThrow("listeid"));
+                            GameModel game = new GameModel(spielID, spielname, preis, bewertung, listID);
+
+                            spieleListe.add(new GameModel(spielID, spielname, preis, bewertung, listID));
+
+                        } while (cursor1.moveToNext());
+                    }
+                    allLists.add(new ListModel(listeid, titel, spieleListe));
+                } while (cursor.moveToNext());
             }
-        }*/
-        allLists.add(new ListModel(allLists.size() + 1, "Liste hinzufügen", null));
+        }
     }
 }
+
+//int spielID = cursor1.getInt(cursor1.getColumnIndexOrThrow("spielid"));
+//String spielname = cursor1.getString(cursor1.getColumnIndexOrThrow("spielname"));
+//float preis = cursor1.getFloat(cursor1.getColumnIndexOrThrow("preis"));
+//int bewertung = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
+//int listID = cursor1.getInt(cursor1.getColumnIndexOrThrow("listeid"));
+//GameModel game = new GameModel(spielID,spielname,preis,bewertung,listID);
+
+//spieleListe.add(new GameModel(0,null,0,0,0));

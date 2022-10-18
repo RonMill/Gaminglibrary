@@ -42,7 +42,6 @@ public class ListenDatenbank extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d("HS_KL", "DB_CREATE1");
         db.execSQL(
                 "CREATE TABLE " + TABELLE_LISTE + " (" +
                         SPALTE_LISTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -80,7 +79,6 @@ public class ListenDatenbank extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d("HS_KL", "DB_UPGRADE");
         db.execSQL("DROP TABLE IF EXISTS " + TABELLE_LISTE);
         db.execSQL("DROP TABLE IF EXISTS " + TABELLE_SPIEL);
         db.execSQL("DROP TABLE IF EXISTS " + TABELLE_KATEGORIE);
@@ -130,6 +128,13 @@ public class ListenDatenbank extends SQLiteOpenHelper {
     public Cursor selectAllSpiele() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor meinZeiger = db.rawQuery("SELECT * FROM " + TABELLE_SPIEL, null);
+        meinZeiger.moveToFirst();
+        return meinZeiger;
+    }
+
+    public Cursor selectAllSpieleFromListe(int listeID) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor meinZeiger = db.rawQuery("SELECT * FROM " + TABELLE_SPIEL + " WHERE " + SPALTE_LISTE_ID + " = " + listeID, null);
         meinZeiger.moveToFirst();
         return meinZeiger;
     }

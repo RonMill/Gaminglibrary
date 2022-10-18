@@ -3,6 +3,7 @@ package com.example.gaminglibrary;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         //db = new BuchDatenbank(this);
         listenDatenbank.insertListe(1,"testliste");
         listenDatenbank.insertSpiel(1,"League", 1.33F,3,1);
+        Log.d("HS_KL", "DB_INSERT_GAME");
         listenDatenbank.insertKategorie(1,1,"MMOGA");
         listenDatenbank.insertTag(1,1,"Killergame");
 

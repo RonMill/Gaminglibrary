@@ -49,13 +49,13 @@ public class ListenDatenbank extends SQLiteOpenHelper {
                         SPALTE_NAME + " TEXT" +
                         ")"
         );
-
+// check(SPALTE_BEWERTUNG >= 0 AND SPALTE_BEWERTUNG <= 5)
         db.execSQL(
                 "CREATE TABLE " + TABELLE_SPIEL + " (" +
                         SPALTE_SPIEL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         SPALTE_SPIEL_NAME + " TEXT," +
                         SPALTE_PREIS + " REAL," +
-                        SPALTE_BEWERTUNG + " INTEGER check(SPALTE_BEWERTUNG >= 0 AND SPALTE_BEWERTUNG <= 5)," +
+                        SPALTE_BEWERTUNG + " INTEGER," +
                         SPALTE_LISTE + " INTEGER" +
                         ")"
         );
@@ -75,6 +75,7 @@ public class ListenDatenbank extends SQLiteOpenHelper {
                         SPALTE_TAG_NAME + " TEXT" +
                         ")"
         );
+
     }
 
     @Override
@@ -104,7 +105,7 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         neueZeile.put(SPALTE_BEWERTUNG, bewertung);
         neueZeile.put(SPALTE_LISTE, listID);
         SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(TABELLE_LISTE, null, neueZeile);
+        db.insert(TABELLE_SPIEL, null, neueZeile);
     }
 
     public void insertKategorie(int kategorieID, int spieleId, String kategorieName) {
@@ -113,7 +114,7 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         neueZeile.put(SPALTE_SPIEL, spieleId);
         neueZeile.put(SPALTE_KATEGORIE_NAME, kategorieName);
         SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(TABELLE_LISTE, null, neueZeile);
+        db.insert(TABELLE_KATEGORIE, null, neueZeile);
     }
 
     //TODO: Man kann nur Tags anlegen wenn man gleichzeitig ein Spiel hinzufügt, vielleicht etwas doof
@@ -123,7 +124,7 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         neueZeile.put(SPALTE_SPIEL, spieleId);
         neueZeile.put(SPALTE_TAG_NAME, tagName);
         SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(TABELLE_LISTE, null, neueZeile);
+        db.insert(TABELLE_TAG, null, neueZeile);
     }
 
     public Cursor selectAllSpiele() {

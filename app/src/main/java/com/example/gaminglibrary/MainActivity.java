@@ -76,29 +76,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-
-
-        /*
-        updateSpieleListe(item.getItemId());
-
-        Array alleIDDB = getIdDBListe;
-
-
-
-        for --> i = 0 bis i = alleIDDb.lenght
-        if(item.getId() == alleIDDB[i]
-            mach was
-
-
-        //TODO: Switch-Case mit den Optionsmenü-Items suchen, hinzufügen, löschen, einstellung und cast implementieren
-        switch (item.getItemId()) {
-            /*case TEST:
-                Log.d("HSKL", "SUCHEN");
-                return true;
-
+        Log.d("HS_KL",String.valueOf(item.getItemId()));
+        if (item.getItemId()==2131231213){
+            for (ListModel listModel: allLists){
+                if (listModel.getId()==item.getItemId()){
+                    currentList=listModel;
+                    this.setTitle(listModel.getName());
+                    return true;
+                }
+            }
         }
-        */
         return super.onOptionsItemSelected(item);
     }
 
@@ -132,12 +119,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
-//int spielID = cursor1.getInt(cursor1.getColumnIndexOrThrow("spielid"));
-//String spielname = cursor1.getString(cursor1.getColumnIndexOrThrow("spielname"));
-//float preis = cursor1.getFloat(cursor1.getColumnIndexOrThrow("preis"));
-//int bewertung = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
-//int listID = cursor1.getInt(cursor1.getColumnIndexOrThrow("listeid"));
-//GameModel game = new GameModel(spielID,spielname,preis,bewertung,listID);
-
-//spieleListe.add(new GameModel(0,null,0,0,0));

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -71,23 +72,48 @@ public class MainActivity extends AppCompatActivity {
             subMenu.add(0, s.getId(), Menu.NONE, s.getName());
         }
         subMenu.add(0, allLists.size() + 1, Menu.NONE, "Liste hinzufügen");
+        subMenu.getItem(allLists.size()).setIcon(R.drawable.ic_add_black_48dp);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("HS_KL",String.valueOf(item.getItemId()));
-        if (item.getItemId()==2131231213){
-            for (ListModel listModel: allLists){
-                if (listModel.getId()==item.getItemId()){
-                    currentList=listModel;
-                    this.setTitle(listModel.getName());
+        switch (item.getItemId()) {
+            case R.id.EDIT:
+                Log.d("HS_KL", "EDIT");
+                return true;
+            case R.id.TAGS:
+                Log.d("HS_KL", "TAGS");
+                return true;
+            case R.id.STATISTIC:
+                Log.d("HS_KL", "STATISTIC");
+                return true;
+            case R.id.SETTINGS:
+                Log.d("HS_KL", "SETTINGS");
+                return true;
+            case R.id.IMPORT:
+                Log.d("HS_KL", "IMPORT");
+                return true;
+            case R.id.EXPORT:
+                Log.d("HS_KL", "EXPORT");
+                return true;
+            default:
+                for (ListModel listModel : allLists) {
+                    if (listModel.getId() == item.getItemId()) {
+                        Log.d("HS_KL", listModel.getName());
+                        currentList = listModel;
+                        this.setTitle(listModel.getName());
+                        return true;
+                    }
+                }
+                if (allLists.size() + 1 == item.getItemId()) {
+                    Log.d("HS_KL", "Liste Hinzufügen");
                     return true;
                 }
-            }
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
+
 
     @SuppressLint("Range")
     private void refreshAllLists() {

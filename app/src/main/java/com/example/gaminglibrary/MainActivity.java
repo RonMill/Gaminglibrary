@@ -35,9 +35,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         listenDatenbank = new ListenDatenbank(this);
-        //db = new BuchDatenbank(this);
+        addSomeFakeData();
+        refreshAllLists();
+        listenDatenbank.deleteList(allLists);
+
+        if (allLists.isEmpty()) {
+            //TODO: DIALOG NOCH ERSTELLEN UND HIER ÖFFNEN
+        } else {
+            currentList = allLists.get(0);
+        }
+
+
+        Log.d("HS_KL", currentList.toString());
+    }
+
+    private void addSomeFakeData(){
         listenDatenbank.insertListe(1, "testliste");
         listenDatenbank.insertListe(2, "zweiteListe");
         listenDatenbank.insertListe(3, "DÖNERR");
@@ -48,17 +61,6 @@ public class MainActivity extends AppCompatActivity {
         listenDatenbank.insertSpiel(5, "League5", 1.33F, 3, 1);
         listenDatenbank.insertKategorie(1, 1, "MMOGA");
         listenDatenbank.insertTag(1, 1, "Killergame");
-
-        refreshAllLists();
-
-        if (allLists.isEmpty()) {
-            //TODO: DIALOG NOCH ERSTELLEN UND HIER ÖFFNEN
-        } else {
-            currentList = allLists.get(0);
-        }
-
-
-        Log.d("HS_KL", currentList.toString());
     }
 
     @Override

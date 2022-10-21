@@ -7,6 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.gaminglibrary.model.ListModel;
+
+import java.util.List;
+
 public class ListenDatenbank extends SQLiteOpenHelper {
 
     public static final int DATENBANK_VERSION = 1;
@@ -158,6 +162,22 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         Cursor meinZeiger = db.rawQuery("SELECT * FROM " + TABELLE_KATEGORIE + " WHERE " + SPALTE_SPIEL + " = " + id, null);
         meinZeiger.moveToFirst();
         return meinZeiger;
+    }
+    public void deleteList(int listeid){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = SPALTE_LISTE_ID + "=?";
+        String[] whereArg = new String[]{Integer.toString(listeid)};
+        db.delete(TABELLE_LISTE, where, whereArg);
+    }
+    public void deleteList(List<ListModel> allLists){
+
+        for(ListModel listModel:allLists){
+            SQLiteDatabase db = this.getWritableDatabase();
+            String where = SPALTE_LISTE_ID + "=?";
+            String[] whereArg = new String[]{Integer.toString(listModel.getId())};
+            db.delete(TABELLE_LISTE, where, whereArg);
+        }
+
     }
 
     /*

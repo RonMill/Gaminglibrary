@@ -38,7 +38,12 @@ public class MainActivity extends AppCompatActivity {
         listenDatenbank = new ListenDatenbank(this);
         addSomeFakeData();
         refreshAllLists();
-        listenDatenbank.deleteList(allLists);
+        //listenDatenbank.deleteList(allLists);
+        //listenDatenbank.deleteList(searchListModelById(2),allLists);
+        Log.d("HS_KL",allLists.toString());
+        deleteListByID(2);
+        Log.d("HS_KL",allLists.toString());
+
 
         if (allLists.isEmpty()) {
             //TODO: DIALOG NOCH ERSTELLEN UND HIER ÖFFNEN
@@ -50,10 +55,30 @@ public class MainActivity extends AppCompatActivity {
         Log.d("HS_KL", currentList.toString());
     }
 
+    private void deleteListByID(int id) {
+        boolean found = false;
+        ListModel foundListModel = null;
+        for(ListModel listModel : allLists){
+            if(listModel.getId()==id){
+                listenDatenbank.deleteList(listModel,allLists);
+                foundListModel = listModel;
+                found = true;
+            }
+            if(found){
+                listModel.setId(listModel.getId()-1);
+            }
+        }
+        allLists.remove(foundListModel);
+        listenDatenbank.changeIDs(allLists,id);
+    }
+
     private void addSomeFakeData(){
         listenDatenbank.insertListe(1, "testliste");
         listenDatenbank.insertListe(2, "zweiteListe");
         listenDatenbank.insertListe(3, "DÖNERR");
+        listenDatenbank.insertListe(4, "DÖNERR1");
+        listenDatenbank.insertListe(5, "DÖNERR2");
+        listenDatenbank.insertListe(6, "DÖNERR3");
         listenDatenbank.insertSpiel(1, "League1", 1.33F, 3, 1);
         listenDatenbank.insertSpiel(2, "League2", 1.33F, 3, 1);
         listenDatenbank.insertSpiel(3, "League3", 1.33F, 3, 1);
@@ -135,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
                             float preis = cursor1.getFloat(cursor1.getColumnIndexOrThrow("preis"));
                             int bewertung = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
                             int listID = cursor1.getInt(cursor1.getColumnIndexOrThrow("listeid"));
-                            GameModel game = new GameModel(spielID, spielname, preis, bewertung, listID);
 
                             spieleListe.add(new GameModel(spielID, spielname, preis, bewertung, listID));
 

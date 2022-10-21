@@ -163,20 +163,39 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         meinZeiger.moveToFirst();
         return meinZeiger;
     }
-    public void deleteList(int listeid){
+    public void deleteList(ListModel listModel, List<ListModel> allLists){
         SQLiteDatabase db = this.getWritableDatabase();
         String where = SPALTE_LISTE_ID + "=?";
-        String[] whereArg = new String[]{Integer.toString(listeid)};
+        String[] whereArg = new String[]{Integer.toString(listModel.getId())};
         db.delete(TABELLE_LISTE, where, whereArg);
+        //allLists.remove(listModel);
     }
     public void deleteList(List<ListModel> allLists){
-
         for(ListModel listModel:allLists){
             SQLiteDatabase db = this.getWritableDatabase();
             String where = SPALTE_LISTE_ID + "=?";
             String[] whereArg = new String[]{Integer.toString(listModel.getId())};
             db.delete(TABELLE_LISTE, where, whereArg);
         }
+
+    }
+    public void changeIDs(List<ListModel> allLists, int deletedID){
+        Cursor cursor = selectAllLists();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        do{
+            int cursorid = cursor.getInt(cursor.getColumnIndexOrThrow("listeid"));
+            Log.d("HS_KL",String.valueOf(cursorid+""+deletedID));
+
+            if(cursorid>deletedID){
+                ContentValues values = new ContentValues();
+                values.put(SPALTE_LISTE_ID, cursorid-1);
+                String where = SPALTE_LISTE_ID + "=?";
+                String[] whereArg = new String[]{Integer.toString(cursorid)};
+                db.update(TABELLE_LISTE,values,where,whereArg);
+            }
+        }
+        while (cursor.moveToNext());
 
     }
 

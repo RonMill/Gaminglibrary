@@ -44,5 +44,9 @@
         android:id="@+id/EXPORT"
         android:title="@string/export"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/INSERT_GAME"
+        android:title="@string/insert_game"
+        app:showAsAction="never" />
 
 </menu>

@@ -12,5 +12,6 @@
     <string name="tags">Tags</string>
     <string name="my_lists">Meine Listen</string>
     <string name="export">Export</string>
-
+    <string name="insert_game">Spiel hinzufügen</string>
+    <string name="open_galery">Bild aus Galerie hinzufügen</string>
 </resources>

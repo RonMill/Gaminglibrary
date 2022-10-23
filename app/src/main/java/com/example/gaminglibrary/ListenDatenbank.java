@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.gaminglibrary.model.ListModel;
 
@@ -99,9 +100,9 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         db.insert(TABELLE_LISTE, null, neueZeile);
     }
 
-    public void insertSpiel(int spieleID, String spieleName, Float preis, int bewertung, int listID) {
+    public void insertSpiel(/*int spieleID,*/ String spieleName, Float preis, int bewertung, int listID) {
         ContentValues neueZeile = new ContentValues();
-        neueZeile.put(SPALTE_SPIEL_ID, spieleID);
+        //neueZeile.put(SPALTE_SPIEL_ID, spieleID);
         neueZeile.put(SPALTE_SPIEL_NAME, spieleName);
         neueZeile.put(SPALTE_PREIS, preis);
         neueZeile.put(SPALTE_BEWERTUNG, bewertung);

@@ -91,9 +91,9 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertListe(int listID, String titel) {
+    public void insertListe(/*int listID,*/ String titel) {
         ContentValues neueZeile = new ContentValues();
-        neueZeile.put(SPALTE_LISTE_ID, listID);
+        //neueZeile.put(SPALTE_LISTE_ID, listID);
         neueZeile.put(SPALTE_NAME, titel);
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABELLE_LISTE, null, neueZeile);

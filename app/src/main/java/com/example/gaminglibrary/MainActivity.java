@@ -3,10 +3,13 @@ package com.example.gaminglibrary;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.util.Log;
@@ -16,6 +19,8 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
@@ -30,55 +35,91 @@ public class MainActivity extends AppCompatActivity {
     //TODO: Später bei verlassen der App currentList in sharedPref saven
     ListModel currentList;
     ListenDatenbank listenDatenbank;
+    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listenDatenbank = new ListenDatenbank(this);
-        addSomeFakeData();
-        refreshAllLists();
+        //addSomeFakeData();
+        //refreshAllLists();
         //listenDatenbank.deleteList(allLists);
         //listenDatenbank.deleteList(searchListModelById(2),allLists);
-        Log.d("HS_KL",allLists.toString());
-        deleteListByID(2);
-        Log.d("HS_KL",allLists.toString());
+        Log.d("HS_KL", allLists.toString());
+        //deleteListByID(2);
+        Log.d("HS_KL", allLists.toString());
+        addingAlertBox();
 
 
         if (allLists.isEmpty()) {
             //TODO: DIALOG NOCH ERSTELLEN UND HIER ÖFFNEN
+            Log.d("HS_KL", "Test");
+            dialog.show();
+            showToast("Keine Liste gefunden!");
         } else {
             currentList = allLists.get(0);
+            Log.d("HS_KL", currentList.toString());
         }
 
 
-        Log.d("HS_KL", currentList.toString());
+    }
+
+    /**
+     * Creating alert box, if the user wanna create a new list or the app starts the first time
+     */
+    private void addingAlertBox() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Liste hinzufügen");
+        builder.setMessage("Was ist der Listennamen?");
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        builder.setView(input);
+        builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                input.setText("");
+            }
+        });
+        builder.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                listenDatenbank.insertListe(String.valueOf(input.getText())); // save the listname in the db
+                showToast("Liste hinzugefügt!");
+            }
+        });
+        dialog = builder.create();
+    }
+
+    private void showToast(String s){
+        Toast myToast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
+        myToast.show(); // show info toast for the user
     }
 
     private void deleteListByID(int id) {
         boolean found = false;
         ListModel foundListModel = null;
-        for(ListModel listModel : allLists){
-            if(listModel.getId()==id){
-                listenDatenbank.deleteList(listModel,allLists);
+        for (ListModel listModel : allLists) {
+            if (listModel.getId() == id) {
+                listenDatenbank.deleteList(listModel, allLists);
                 foundListModel = listModel;
                 found = true;
             }
-            if(found){
-                listModel.setId(listModel.getId()-1);
+            if (found) {
+                listModel.setId(listModel.getId() - 1);
             }
         }
         allLists.remove(foundListModel);
-        listenDatenbank.changeIDs(allLists,id);
+        listenDatenbank.changeIDs(allLists, id);
     }
 
-    private void addSomeFakeData(){
-        listenDatenbank.insertListe(1, "testliste");
-        listenDatenbank.insertListe(2, "zweiteListe");
-        listenDatenbank.insertListe(3, "DÖNERR");
-        listenDatenbank.insertListe(4, "DÖNERR1");
-        listenDatenbank.insertListe(5, "DÖNERR2");
-        listenDatenbank.insertListe(6, "DÖNERR3");
+    private void addSomeFakeData() {
+        listenDatenbank.insertListe(/*1,*/ "testliste");
+        listenDatenbank.insertListe(/*2,*/ "zweiteListe");
+        listenDatenbank.insertListe(/*3,*/ "DÖNERR");
+        listenDatenbank.insertListe(/*4,*/ "DÖNERR1");
+        listenDatenbank.insertListe(/*5,*/ "DÖNERR2");
+        listenDatenbank.insertListe(/*6,*/ "DÖNERR3");
         listenDatenbank.insertSpiel(1, "League1", 1.33F, 3, 1);
         listenDatenbank.insertSpiel(2, "League2", 1.33F, 3, 1);
         listenDatenbank.insertSpiel(3, "League3", 1.33F, 3, 1);
@@ -135,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (allLists.size() + 1 == item.getItemId()) {
                     Log.d("HS_KL", "Liste Hinzufügen");
+                    dialog.show();
                     return true;
                 }
                 return super.onOptionsItemSelected(item);

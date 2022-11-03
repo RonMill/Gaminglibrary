@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
 import java.util.List;
@@ -91,9 +92,9 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertListe(/*int listID,*/ String titel) {
+    public void insertListe(int listID, String titel) {
         ContentValues neueZeile = new ContentValues();
-        //neueZeile.put(SPALTE_LISTE_ID, listID);
+        neueZeile.put(SPALTE_LISTE_ID, listID);
         neueZeile.put(SPALTE_NAME, titel);
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABELLE_LISTE, null, neueZeile);
@@ -179,6 +180,7 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         }
 
     }
+
     public void changeIDs(List<ListModel> allLists, int deletedID){
         Cursor cursor = selectAllLists();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -196,7 +198,6 @@ public class ListenDatenbank extends SQLiteOpenHelper {
             }
         }
         while (cursor.moveToNext());
-
     }
 
     /*

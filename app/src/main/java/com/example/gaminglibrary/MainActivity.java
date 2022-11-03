@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.WindowInsets;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     ListModel currentList;
     ListenDatenbank listenDatenbank;
     AlertDialog dialog;
+    public SubMenu subMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +45,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listenDatenbank = new ListenDatenbank(this);
         //addSomeFakeData();
-        //refreshAllLists();
+        refreshAllLists();
         //listenDatenbank.deleteList(allLists);
         //listenDatenbank.deleteList(searchListModelById(2),allLists);
         Log.d("HS_KL", allLists.toString());
-        //deleteListByID(2);
+        //deleteListByID(1);
         Log.d("HS_KL", allLists.toString());
         addingAlertBox();
 
@@ -69,12 +71,17 @@ public class MainActivity extends AppCompatActivity {
      * Creating alert box, if the user wanna create a new list or the app starts the first time
      */
     private void addingAlertBox() {
+        // Set up the alert box
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Liste hinzufügen");
         builder.setMessage("Was ist der Listennamen?");
+
+        // define edit field
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         builder.setView(input);
+
+        // define negative and positive button
         builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -84,18 +91,33 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                listenDatenbank.insertListe(String.valueOf(input.getText())); // save the listname in the db
+                listenDatenbank.insertListe(allLists.size() + 1, String.valueOf(input.getText())); // save the listname in the db
+                allLists.add(new ListModel(allLists.size() + 1, String.valueOf(input.getText()), new ArrayList<>()));
                 showToast("Liste hinzugefügt!");
+                input.setText("");
+                updateSubMenu();
             }
         });
-        dialog = builder.create();
+        dialog = builder.create(); // create current dialog
+
+        //TODO: Menu updaten
     }
 
-    private void showToast(String s){
+    /**
+     * Show Toast
+     *
+     * @param s Text inside Toast
+     */
+    private void showToast(String s) {
         Toast myToast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
         myToast.show(); // show info toast for the user
     }
 
+    /**
+     * Delete a list
+     *
+     * @param id ID from list
+     */
     private void deleteListByID(int id) {
         boolean found = false;
         ListModel foundListModel = null;
@@ -111,15 +133,16 @@ public class MainActivity extends AppCompatActivity {
         }
         allLists.remove(foundListModel);
         listenDatenbank.changeIDs(allLists, id);
+
     }
 
     private void addSomeFakeData() {
-        listenDatenbank.insertListe(/*1,*/ "testliste");
-        listenDatenbank.insertListe(/*2,*/ "zweiteListe");
-        listenDatenbank.insertListe(/*3,*/ "DÖNERR");
-        listenDatenbank.insertListe(/*4,*/ "DÖNERR1");
-        listenDatenbank.insertListe(/*5,*/ "DÖNERR2");
-        listenDatenbank.insertListe(/*6,*/ "DÖNERR3");
+        listenDatenbank.insertListe(1, "testliste");
+        listenDatenbank.insertListe(2, "zweiteListe");
+        listenDatenbank.insertListe(3, "DÖNERR");
+        listenDatenbank.insertListe(4, "DÖNERR1");
+        listenDatenbank.insertListe(5, "DÖNERR2");
+        listenDatenbank.insertListe(6, "DÖNERR3");
         listenDatenbank.insertSpiel(1, "League1", 1.33F, 3, 1);
         listenDatenbank.insertSpiel(2, "League2", 1.33F, 3, 1);
         listenDatenbank.insertSpiel(3, "League3", 1.33F, 3, 1);
@@ -129,12 +152,18 @@ public class MainActivity extends AppCompatActivity {
         listenDatenbank.insertTag(1, 1, "Killergame");
     }
 
+    /**
+     * Add interaction menu at the top
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mi = getMenuInflater();
         mi.inflate(R.menu.start_activity_menu, menu);
 
-        SubMenu subMenu = menu.findItem(R.id.MY_LISTS).getSubMenu();
+        subMenu = menu.findItem(R.id.MY_LISTS).getSubMenu();
         subMenu.clear();
         for (ListModel s : allLists) {
             subMenu.add(0, s.getId(), Menu.NONE, s.getName());
@@ -142,6 +171,15 @@ public class MainActivity extends AppCompatActivity {
         subMenu.add(0, allLists.size() + 1, Menu.NONE, "Liste hinzufügen");
         subMenu.getItem(allLists.size()).setIcon(R.drawable.ic_add_black_48dp);
         return true;
+    }
+
+    private void updateSubMenu(){
+        subMenu.clear();
+        for (ListModel s : allLists) {
+            subMenu.add(0, s.getId(), Menu.NONE, s.getName());
+        }
+        subMenu.add(0, allLists.size() + 1, Menu.NONE, "Liste hinzufügen");
+        subMenu.getItem(allLists.size()).setIcon(R.drawable.ic_add_black_48dp);
     }
 
     @Override
@@ -174,9 +212,9 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
                 }
-                if (allLists.size() + 1 == item.getItemId()) {
+                if (allLists.size() + 1 == item.getItemId()) { // if the user choose Liste hinzufügen
                     Log.d("HS_KL", "Liste Hinzufügen");
-                    dialog.show();
+                    dialog.show(); // show dialog to insert a list
                     return true;
                 }
                 return super.onOptionsItemSelected(item);
@@ -186,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("Range")
     private void refreshAllLists() {
-
         try (Cursor cursor = listenDatenbank.selectAllLists()) {
             if (cursor.getCount() > 0) {
                 do {

@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
 import java.util.List;
@@ -180,6 +181,7 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         }
 
     }
+
     public void changeIDs(List<ListModel> allLists, int deletedID){
         Cursor cursor = selectAllLists();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -197,7 +199,6 @@ public class ListenDatenbank extends SQLiteOpenHelper {
             }
         }
         while (cursor.moveToNext());
-
     }
 
     /*

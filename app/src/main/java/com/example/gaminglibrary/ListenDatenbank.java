@@ -57,11 +57,12 @@ public class ListenDatenbank extends SQLiteOpenHelper {
 // check(SPALTE_BEWERTUNG >= 0 AND SPALTE_BEWERTUNG <= 5)
         db.execSQL(
                 "CREATE TABLE " + TABELLE_SPIEL + " (" +
-                        SPALTE_SPIEL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        SPALTE_SPIEL_ID + " INTEGER NOT NULL," +
                         SPALTE_SPIEL_NAME + " TEXT," +
                         SPALTE_PREIS + " REAL," +
                         SPALTE_BEWERTUNG + " INTEGER," +
-                        SPALTE_LISTE + " INTEGER" +
+                        SPALTE_LISTE + " INTEGER NOT NULL," +
+                        "PRIMARY KEY (" + SPALTE_SPIEL_ID + ", " + SPALTE_LISTE + ")"+
                         ")"
         );
 
@@ -101,15 +102,16 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         db.insert(TABELLE_LISTE, null, neueZeile);
     }
 
-    public void insertSpiel(/*int spieleID,*/ String spieleName, Float preis, int bewertung, int listID) {
+    public void insertSpiel(int spieleID, String spieleName, Float preis, int bewertung, int listID) {
         ContentValues neueZeile = new ContentValues();
-        //neueZeile.put(SPALTE_SPIEL_ID, spieleID);
+        neueZeile.put(SPALTE_SPIEL_ID, spieleID);
         neueZeile.put(SPALTE_SPIEL_NAME, spieleName);
         neueZeile.put(SPALTE_PREIS, preis);
         neueZeile.put(SPALTE_BEWERTUNG, bewertung);
         neueZeile.put(SPALTE_LISTE, listID);
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABELLE_SPIEL, null, neueZeile);
+        
     }
 
     public void insertKategorie(int kategorieID, int spieleId, String kategorieName) {
@@ -178,6 +180,18 @@ public class ListenDatenbank extends SQLiteOpenHelper {
             String where = SPALTE_LISTE_ID + "=?";
             String[] whereArg = new String[]{Integer.toString(listModel.getId())};
             db.delete(TABELLE_LISTE, where, whereArg);
+        }
+
+    }
+
+    public void deleteAllGames(List<ListModel> allLists){
+        for(ListModel listModel:allLists){
+            for(GameModel gameModel : listModel.getGames()){
+            SQLiteDatabase db = this.getWritableDatabase();
+                String where = SPALTE_SPIEL_ID + "=?";
+                String[] whereArg = new String[]{Integer.toString(gameModel.getId())};
+                db.delete(TABELLE_SPIEL, where, whereArg);
+            }
         }
 
     }

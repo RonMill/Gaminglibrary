@@ -1,11 +1,15 @@
 package com.example.gaminglibrary.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListModel {
+public class ListModel implements Parcelable, Serializable {
     private int id;
     private String name;
     private List<GameModel> games;
@@ -40,14 +44,15 @@ public class ListModel {
         this.games = games;
     }
 
-    public void addGameToList(GameModel gameModel){
+    public void addGameToList(GameModel gameModel) {
         games.add(gameModel);
     }
-    public int deleteGameFromList(GameModel gameModel){
-        if(games.contains(gameModel)) {
+
+    public int deleteGameFromList(GameModel gameModel) {
+        if (games.contains(gameModel)) {
             games.remove(gameModel);
             return 1;
-        }else{
+        } else {
             return -1;
         }
     }
@@ -60,5 +65,17 @@ public class ListModel {
                 ", name='" + name + '\'' +
                 ", games=" + games.toString() +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(name);
+        parcel.writeList(games);
     }
 }

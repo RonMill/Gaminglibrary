@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.InputType;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -42,15 +43,14 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    List<ListModel> allLists = new ArrayList<>();
+    static List<ListModel> allLists = new ArrayList<>();
     ListView listView;
-    ListenDatenbank db;
     private static final int GET_FROM_GALLERY = 3;
 
 
     //TODO: Später bei verlassen der App currentList in sharedPref saven
     ListModel currentList;
-    ListenDatenbank listenDatenbank;
+    static ListenDatenbank listenDatenbank;
     AlertDialog dialog;
     public SubMenu subMenu;
 
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         initDB();
         Log.d("HS_KL", allLists.toString());
         //deleteListByID(1);
+        //listenDatenbank.deleteAllGames(allLists);
         Log.d("HS_KL", allLists.toString());
         addingAlertBox();
 
@@ -68,10 +69,12 @@ public class MainActivity extends AppCompatActivity {
         if (allLists.isEmpty()) {
             //TODO: DIALOG NOCH ERSTELLEN UND HIER ÖFFNEN
             Log.d("HS_KL", "Test");
-            dialog.show();
             showToast("Keine Liste gefunden!");
+            dialog.show();
+
         } else {
             currentList = allLists.get(0);
+            //addSomeFakeData();
             Log.d("HS_KL", currentList.toString());
         }
 
@@ -79,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDB() {
         listenDatenbank = new ListenDatenbank(this);
-        //addSomeFakeData();
         refreshAllLists();
         //listenDatenbank.deleteList(allLists);
         //listenDatenbank.deleteList(searchListModelById(2),allLists);
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         //deleteListByID(2);
         Log.d("HS_KL", allLists.toString());
     }
+
     /**
      * Creating alert box, if the user wanna create a new list or the app starts the first time
      */
@@ -116,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 showToast("Liste hinzugefügt!");
                 input.setText("");
                 updateSubMenu();
+                currentList = allLists.get(allLists.size() - 1);
             }
         });
         dialog = builder.create(); // create current dialog
@@ -141,14 +145,14 @@ public class MainActivity extends AppCompatActivity {
     private void deleteListByID(int id) {
         boolean found = false;
         ListModel foundListModel = null;
-        for(ListModel listModel : allLists){
-            if(listModel.getId()==id){
-                listenDatenbank.deleteList(listModel,allLists);
+        for (ListModel listModel : allLists) {
+            if (listModel.getId() == id) {
+                listenDatenbank.deleteList(listModel, allLists);
                 foundListModel = listModel;
                 found = true;
             }
-            if(found){
-                listModel.setId(listModel.getId()-1);
+            if (found) {
+                listModel.setId(listModel.getId() - 1);
             }
         }
         allLists.remove(foundListModel);
@@ -156,17 +160,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addSomeFakeData() {
-        listenDatenbank.insertListe(1, "testliste");
+        /*listenDatenbank.insertListe(1, "testliste");
         listenDatenbank.insertListe(2, "zweiteListe");
         listenDatenbank.insertListe(3, "DÖNERR");
         listenDatenbank.insertListe(4, "DÖNERR1");
         listenDatenbank.insertListe(5, "DÖNERR2");
-        listenDatenbank.insertListe(6, "DÖNERR3");
-        listenDatenbank.insertSpiel(1, "League1", 1.33F, 3, 1);
-        listenDatenbank.insertSpiel(2, "League2", 1.33F, 3, 1);
-        listenDatenbank.insertSpiel(3, "League3", 1.33F, 3, 1);
-        listenDatenbank.insertSpiel(4, "League4", 1.33F, 3, 1);
-        listenDatenbank.insertSpiel(5, "League5", 1.33F, 3, 1);
+        listenDatenbank.insertListe(6, "DÖNERR3");*/
+        listenDatenbank.insertSpiel(1, "League1", 1.33F, 3, currentList.getId());
+        /*listenDatenbank.insertSpiel(currentList.getGames().size() + 1, "League2", 1.33F, 3, currentList.getId());
+        listenDatenbank.insertSpiel(currentList.getGames().size() + 1, "League3", 1.33F, 3, currentList.getId());
+        listenDatenbank.insertSpiel(currentList.getGames().size() + 1, "League4", 1.33F, 3, currentList.getId());
+        listenDatenbank.insertSpiel(currentList.getGames().size() + 1, "League5", 1.33F, 3, currentList.getId());*/
         listenDatenbank.insertKategorie(1, 1, "MMOGA");
         listenDatenbank.insertTag(1, 1, "Killergame");
     }
@@ -192,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void updateSubMenu(){
+    private void updateSubMenu() {
         subMenu.clear();
         for (ListModel s : allLists) {
             subMenu.add(0, s.getId(), Menu.NONE, s.getName());
@@ -225,8 +229,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.INSERT_GAME:
                 Log.d("HS_KL", "Version 4");
                 Intent i1 = new Intent(this, InsertGameActivity.class);
-                i1.putExtra("LISTID", currentList.getId());
-                i1.putExtra("LISTSIZE", currentList.getGames().size());
+                i1.putExtra("CURRENTLIST", (Parcelable) currentList);
                 startActivity(i1);
                 return true;
             default:
@@ -249,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     @SuppressLint("Range")
-    private void refreshAllLists() {
+    public static void refreshAllLists() {
 
         try (Cursor cursor = listenDatenbank.selectAllLists()) {
             if (cursor.getCount() > 0) {
@@ -273,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     allLists.add(new ListModel(listeid, titel, spieleListe));
                 } while (cursor.moveToNext());
+
             }
         }
     }

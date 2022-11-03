@@ -11,12 +11,19 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.gaminglibrary.model.GameModel;
+import com.example.gaminglibrary.model.ListModel;
+
+import java.util.ArrayList;
+
 public class InsertGameActivity extends AppCompatActivity implements View.OnClickListener {
     ListenDatenbank db;
     Button addGame;
     EditText gameName, gamePrice, gameReview;
     int listID;
     int size;
+    int lastIndex;
+    ListModel currentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +33,7 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
         Intent i1 = getIntent();
 
 
-        listID = i1.getIntExtra("LISTID", 0);
-        size = i1.getIntExtra("LISTSIZE", 0);
+        //currentList = (ListModel) i1.getSerializableExtra("CURRENTLISt");
 
 
         addGame = (Button) findViewById(R.id.ADD_GAME);
@@ -40,16 +46,19 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
 
 
     }
-
+    //TODO: Insert in DB funkt net
     @Override
     public void onClick(View view) {
         if (view.getId() == addGame.getId()) {
             Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
             int review = Integer.parseInt(String.valueOf(gameReview.getText()));
-            db.insertSpiel(gameName.getText().toString(), price, review, listID);
+            db.insertSpiel(currentList.getGames().size() + 1, gameName.getText().toString(), price, review, currentList.getId());
+            if(currentList.getGames() == null){
+                currentList.setGames(new ArrayList<GameModel>());
+            }
+            currentList.getGames().add(new GameModel(currentList.getGames().size() + 1, gameName.getText().toString(), price, review, currentList.getId()));
             Toast t = Toast.makeText(this, "Spiel hinzugefügt", Toast.LENGTH_SHORT);
             t.show();
-
 
             this.finish();
         }

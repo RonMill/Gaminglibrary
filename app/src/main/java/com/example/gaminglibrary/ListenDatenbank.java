@@ -31,6 +31,7 @@ public class ListenDatenbank extends SQLiteOpenHelper {
     public static final String SPALTE_PREIS = "preis";
     public static final String SPALTE_BEWERTUNG = "bewertung";
     public static final String SPALTE_LISTE = "listeid";
+    public static final String SPALTE_IMAGE_URI = "imageUri";
 
     public static final String TABELLE_KATEGORIE = "kategorie";
     public static final String SPALTE_KATEGORIE_ID = "listeid";
@@ -63,7 +64,8 @@ public class ListenDatenbank extends SQLiteOpenHelper {
                         SPALTE_PREIS + " REAL," +
                         SPALTE_BEWERTUNG + " INTEGER," +
                         SPALTE_LISTE + " INTEGER NOT NULL," +
-                        "PRIMARY KEY (" + SPALTE_SPIEL_ID + ", " + SPALTE_LISTE + ")"+
+                        SPALTE_IMAGE_URI + " TEXT," +
+                        "PRIMARY KEY (" + SPALTE_SPIEL_ID + ", " + SPALTE_LISTE + ")" +
                         ")"
         );
 
@@ -103,6 +105,18 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         db.insert(TABELLE_LISTE, null, neueZeile);
     }
 
+    public void insertSpiel(int spieleID, String spieleName, Float preis, int bewertung, int listID, String uri) {
+        ContentValues neueZeile = new ContentValues();
+        neueZeile.put(SPALTE_SPIEL_ID, spieleID);
+        neueZeile.put(SPALTE_SPIEL_NAME, spieleName);
+        neueZeile.put(SPALTE_PREIS, preis);
+        neueZeile.put(SPALTE_BEWERTUNG, bewertung);
+        neueZeile.put(SPALTE_LISTE, listID);
+        neueZeile.put(SPALTE_IMAGE_URI, uri);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(TABELLE_SPIEL, null, neueZeile);
+    }
+
     public void insertSpiel(int spieleID, String spieleName, Float preis, int bewertung, int listID) {
         ContentValues neueZeile = new ContentValues();
         neueZeile.put(SPALTE_SPIEL_ID, spieleID);
@@ -112,7 +126,6 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         neueZeile.put(SPALTE_LISTE, listID);
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABELLE_SPIEL, null, neueZeile);
-        
     }
 
     public void insertKategorie(int kategorieID, int spieleId, String kategorieName) {
@@ -168,15 +181,17 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         meinZeiger.moveToFirst();
         return meinZeiger;
     }
-    public void deleteList(ListModel listModel, List<ListModel> allLists){
+
+    public void deleteList(ListModel listModel, List<ListModel> allLists) {
         SQLiteDatabase db = this.getWritableDatabase();
         String where = SPALTE_LISTE_ID + "=?";
         String[] whereArg = new String[]{Integer.toString(listModel.getId())};
         db.delete(TABELLE_LISTE, where, whereArg);
         //allLists.remove(listModel);
     }
-    public void deleteList(List<ListModel> allLists){
-        for(ListModel listModel:allLists){
+
+    public void deleteList(List<ListModel> allLists) {
+        for (ListModel listModel : allLists) {
             SQLiteDatabase db = this.getWritableDatabase();
             String where = SPALTE_LISTE_ID + "=?";
             String[] whereArg = new String[]{Integer.toString(listModel.getId())};
@@ -185,10 +200,10 @@ public class ListenDatenbank extends SQLiteOpenHelper {
 
     }
 
-    public void deleteAllGames(List<ListModel> allLists){
-        for(ListModel listModel:allLists){
-            for(GameModel gameModel : listModel.getGames()){
-            SQLiteDatabase db = this.getWritableDatabase();
+    public void deleteAllGames(List<ListModel> allLists) {
+        for (ListModel listModel : allLists) {
+            for (GameModel gameModel : listModel.getGames()) {
+                SQLiteDatabase db = this.getWritableDatabase();
                 String where = SPALTE_SPIEL_ID + "=?";
                 String[] whereArg = new String[]{Integer.toString(gameModel.getId())};
                 db.delete(TABELLE_SPIEL, where, whereArg);
@@ -197,20 +212,20 @@ public class ListenDatenbank extends SQLiteOpenHelper {
 
     }
 
-    public void changeIDs(List<ListModel> allLists, int deletedID){
+    public void changeIDs(List<ListModel> allLists, int deletedID) {
         Cursor cursor = selectAllLists();
         SQLiteDatabase db = this.getWritableDatabase();
 
-        do{
+        do {
             int cursorid = cursor.getInt(cursor.getColumnIndexOrThrow("listeid"));
-            Log.d("HS_KL",String.valueOf(cursorid+""+deletedID));
+            Log.d("HS_KL", String.valueOf(cursorid + "" + deletedID));
 
-            if(cursorid>deletedID){
+            if (cursorid > deletedID) {
                 ContentValues values = new ContentValues();
-                values.put(SPALTE_LISTE_ID, cursorid-1);
+                values.put(SPALTE_LISTE_ID, cursorid - 1);
                 String where = SPALTE_LISTE_ID + "=?";
                 String[] whereArg = new String[]{Integer.toString(cursorid)};
-                db.update(TABELLE_LISTE,values,where,whereArg);
+                db.update(TABELLE_LISTE, values, where, whereArg);
             }
         }
         while (cursor.moveToNext());

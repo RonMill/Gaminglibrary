@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.InputType;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             //addSomeFakeData();
             Log.d("HS_KL", currentList.toString());
         }
-        this.setTitle(currentList.getName());
+
 
     }
 
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 listenDatenbank.insertListe(allLists.size() + 1, String.valueOf(input.getText())); // save the listname in the db
                 allLists.add(new ListModel(allLists.size() + 1, String.valueOf(input.getText()), new ArrayList<>()));
                 showToast("Liste hinzugefügt!");
+                currentList = allLists.get(0);
                 input.setText("");
                 updateSubMenu();
                 currentList = allLists.get(allLists.size() - 1);
@@ -202,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
         }
         subMenu.add(0, allLists.size() + 1, Menu.NONE, "Liste hinzufügen");
         subMenu.getItem(allLists.size()).setIcon(R.drawable.ic_add_black_48dp);
+        this.setTitle(currentList.getName());
     }
 
     @Override
@@ -268,8 +271,9 @@ public class MainActivity extends AppCompatActivity {
                             float preis = cursor1.getFloat(cursor1.getColumnIndexOrThrow("preis"));
                             int bewertung = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
                             int listID = cursor1.getInt(cursor1.getColumnIndexOrThrow("listeid"));
+                            Uri imageFromPath = Uri.parse(cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")));
 
-                            spieleListe.add(new GameModel(spielID, spielname, preis, bewertung, listID));
+                            spieleListe.add(new GameModel(spielID, spielname, preis, bewertung, listID, imageFromPath));
 
                         } while (cursor1.moveToNext());
                     }

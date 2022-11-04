@@ -80,7 +80,6 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
         loadPicture.setOnClickListener(this);
 
 
-
     }
 
     @Override
@@ -88,14 +87,19 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
         if (view.getId() == addGame.getId()) {
             Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
             int review = Integer.parseInt(String.valueOf(gameReview.getText()));
-            db.insertSpiel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId());
-            MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId()));
+            if (!imageFilePath.equals(null)) { // if user select a picture
+                db.insertSpiel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), String.valueOf(imageFilePath));
+                MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), imageFilePath));
+            } else {
+                db.insertSpiel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId());
+                MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), null));
+            }
 
             Toast t = Toast.makeText(this, "Spiel hinzugefügt", Toast.LENGTH_SHORT);
             t.show();
 
             this.finish();
-        } else if (view.getId() == loadPicture.getId()){
+        } else if (view.getId() == loadPicture.getId()) {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);

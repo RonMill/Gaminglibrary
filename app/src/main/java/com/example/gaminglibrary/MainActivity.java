@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //TODO: Später bei verlassen der App currentList in sharedPref saven
-    ListModel currentList;
+    static ListModel currentList;
     static ListenDatenbank listenDatenbank;
     AlertDialog dialog;
     public SubMenu subMenu;
@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             //addSomeFakeData();
             Log.d("HS_KL", currentList.toString());
         }
+        this.setTitle(currentList.getName());
 
     }
 
@@ -123,8 +124,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         dialog = builder.create(); // create current dialog
-
-        //TODO: Menu updaten
     }
 
     /**
@@ -229,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.INSERT_GAME:
                 Log.d("HS_KL", "Version 4");
                 Intent i1 = new Intent(this, InsertGameActivity.class);
-                i1.putExtra("CURRENTLIST", (Parcelable) currentList);
+                //i1.putExtra("CURRENTLIST", (Parcelable) currentList);
                 startActivity(i1);
                 return true;
             default:
@@ -253,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("Range")
     public static void refreshAllLists() {
-
+        allLists.clear(); // clear list to avoid double entrys
         try (Cursor cursor = listenDatenbank.selectAllLists()) {
             if (cursor.getCount() > 0) {
                 do {

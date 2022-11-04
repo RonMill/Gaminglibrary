@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
+import java.sql.Blob;
 import java.util.List;
 
 public class ListenDatenbank extends SQLiteOpenHelper {
@@ -54,7 +55,7 @@ public class ListenDatenbank extends SQLiteOpenHelper {
                         SPALTE_NAME + " TEXT" +
                         ")"
         );
-// check(SPALTE_BEWERTUNG >= 0 AND SPALTE_BEWERTUNG <= 5)
+
         db.execSQL(
                 "CREATE TABLE " + TABELLE_SPIEL + " (" +
                         SPALTE_SPIEL_ID + " INTEGER NOT NULL," +

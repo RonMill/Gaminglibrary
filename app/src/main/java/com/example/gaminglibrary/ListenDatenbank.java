@@ -53,7 +53,7 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         db.execSQL(
                 "CREATE TABLE " + TABELLE_LISTE + " (" +
                         SPALTE_LISTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        SPALTE_NAME + " TEXT" +
+                        SPALTE_NAME + " TEXT NOT NULL" +
                         ")"
         );
 

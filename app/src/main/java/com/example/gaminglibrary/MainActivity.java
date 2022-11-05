@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //this.setTitle("");
         initDB();
         Log.d("HS_KL", allLists.toString());
         //deleteListByID(1);
@@ -78,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
             //addSomeFakeData();
             Log.d("HS_KL", currentList.toString());
         }
-
 
     }
 
@@ -119,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
                 listenDatenbank.insertListe(allLists.size() + 1, String.valueOf(input.getText())); // save the listname in the db
                 allLists.add(new ListModel(allLists.size() + 1, String.valueOf(input.getText()), new ArrayList<>()));
                 showToast("Liste hinzugefügt!");
-                currentList = allLists.get(0);
                 input.setText("");
                 updateSubMenu();
                 currentList = allLists.get(allLists.size() - 1);
@@ -204,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         }
         subMenu.add(0, allLists.size() + 1, Menu.NONE, "Liste hinzufügen");
         subMenu.getItem(allLists.size()).setIcon(R.drawable.ic_add_black_48dp);
-        this.setTitle(currentList.getName());
+
     }
 
     @Override
@@ -229,10 +228,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("HS_KL", "EXPORT");
                 return true;
             case R.id.INSERT_GAME:
-                Log.d("HS_KL", "Version 4");
-                Intent i1 = new Intent(this, InsertGameActivity.class);
-                //i1.putExtra("CURRENTLIST", (Parcelable) currentList);
-                startActivity(i1);
+                if (allLists.size() > 0) {
+                    Log.d("HS_KL", "Version 4");
+                    Intent i1 = new Intent(this, InsertGameActivity.class);
+                    //i1.putExtra("CURRENTLIST", (Parcelable) currentList);
+                    startActivity(i1);
+                } else {
+                    showToast("Es existiert keine Liste!");
+                }
                 return true;
             default:
                 for (ListModel listModel : allLists) {

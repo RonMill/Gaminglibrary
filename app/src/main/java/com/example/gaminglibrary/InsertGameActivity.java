@@ -45,6 +45,7 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_insert_game);
         db = new ListenDatenbank(this);
         Intent i1 = getIntent();
+        this.setTitle(MainActivity.currentList.getName());
 
         //currentList = (ListModel) i1.getSerializableExtra("CURRENTLIST");
 

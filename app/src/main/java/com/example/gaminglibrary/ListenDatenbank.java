@@ -26,7 +26,7 @@ public class ListenDatenbank extends SQLiteOpenHelper {
 
 
     public static final String TABELLE_SPIEL = "spiel";
-    public static final String SPALTE_SPIEL_ID = "spielid";
+    public static final String SPALTE_SPIEL_ID = "_id";
     public static final String SPALTE_SPIEL_NAME = "spielname";
     public static final String SPALTE_PREIS = "preis";
     public static final String SPALTE_BEWERTUNG = "bewertung";
@@ -160,6 +160,7 @@ public class ListenDatenbank extends SQLiteOpenHelper {
         meinZeiger.moveToFirst();
         return meinZeiger;
     }
+
 
     public Cursor selectAllLists() {
         SQLiteDatabase db = getReadableDatabase();

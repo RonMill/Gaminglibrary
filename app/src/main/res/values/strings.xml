@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">Meine Liste</string>
     <string name="share">Teilen</string>
     <string name="review">Bewerten</string>
     <string name="search">Suchen</string>

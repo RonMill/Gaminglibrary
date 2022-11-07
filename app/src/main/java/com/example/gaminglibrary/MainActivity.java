@@ -5,13 +5,19 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.drawable.Drawable;
@@ -46,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     static List<ListModel> allLists = new ArrayList<>();
     ListView listView;
-    private static final int GET_FROM_GALLERY = 3;
+    private int STORAGE_PERMISSION_CODE = 1;
 
 
     //TODO: Später bei verlassen der App currentList in sharedPref saven
@@ -59,34 +65,50 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //this.setTitle("");
-        initDB();
-        Log.d("HS_KL", allLists.toString());
-        //deleteListByID(1);
-        //listenDatenbank.deleteAllGames(allLists);
-        Log.d("HS_KL", allLists.toString());
-        addingAlertBox();
 
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+
+        listView = (ListView) findViewById(R.id.MY_LISTVIEW);
+        initDB();
+        addingAlertBox();
 
         if (allLists.isEmpty()) {
             //TODO: DIALOG NOCH ERSTELLEN UND HIER ÖFFNEN
             Log.d("HS_KL", "Test");
             showToast("Keine Liste gefunden!");
             dialog.show();
-
         } else {
             currentList = allLists.get(0);
             //addSomeFakeData();
             Log.d("HS_KL", currentList.toString());
+            this.setTitle(allLists.get(0).getName());
         }
 
+        loadGames();
+
     }
+
+    /**
+     * load all games into adapter --> Show all games from the current list on the start page
+     */
+    public void loadGames() {
+        Context ctx = this;
+        int itemLayout = R.layout.simple_game_layout;
+        Cursor cursor = listenDatenbank.selectAllSpieleFromListe(currentList.getId());
+        String[] from = new String[]{/*listenDatenbank.SPALTE_IMAGE_URI,*/ listenDatenbank.SPALTE_SPIEL_NAME, listenDatenbank.SPALTE_PREIS, listenDatenbank.SPALTE_BEWERTUNG};
+        int[] to = new int[]{/*R.id.MEIN_PERSONEN_BILD,*/ R.id.MEIN_PERSONEN_NAMEN, R.id.MEIN_PERSONEN_ADRESSE, R.id.MEIN_BEWERTUNG};
+        MyAdapter meinAdapter = new MyAdapter(ctx, itemLayout, cursor, from, to, 0);
+        listView.setAdapter(meinAdapter);
+    }
+
 
     private void initDB() {
         listenDatenbank = new ListenDatenbank(this);
         refreshAllLists();
         //listenDatenbank.deleteList(allLists);
         //listenDatenbank.deleteList(searchListModelById(2),allLists);
+        //deleteListByID(1);
+        //listenDatenbank.deleteAllGames(allLists);
         Log.d("HS_KL", allLists.toString());
         //deleteListByID(2);
         Log.d("HS_KL", allLists.toString());
@@ -124,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 currentList = allLists.get(allLists.size() - 1);
             }
         });
+        this.setTitle(allLists.get(allLists.size() - 1).getName());
         dialog = builder.create(); // create current dialog
     }
 
@@ -229,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.INSERT_GAME:
                 if (allLists.size() > 0) {
-                    Log.d("HS_KL", "Version 4");
                     Intent i1 = new Intent(this, InsertGameActivity.class);
                     //i1.putExtra("CURRENTLIST", (Parcelable) currentList);
                     startActivity(i1);
@@ -243,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("HS_KL", listModel.getName());
                         currentList = listModel;
                         this.setTitle(listModel.getName());
+                        loadGames();
                         return true;
                     }
                 }
@@ -269,20 +292,23 @@ public class MainActivity extends AppCompatActivity {
 
                     if (cursor1.getCount() > 0) {
                         do {
-                            int spielID = cursor1.getInt(cursor1.getColumnIndexOrThrow("spielid"));
+                            int spielID = cursor1.getInt(cursor1.getColumnIndexOrThrow("_id"));
                             String spielname = cursor1.getString(cursor1.getColumnIndexOrThrow("spielname"));
                             float preis = cursor1.getFloat(cursor1.getColumnIndexOrThrow("preis"));
                             int bewertung = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
                             int listID = cursor1.getInt(cursor1.getColumnIndexOrThrow("listeid"));
-                            Uri imageFromPath = Uri.parse(cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")));
+                            if (!cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")).equals("null")) {
+                                Uri imageFromPath = Uri.parse(cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")));
+                                spieleListe.add(new GameModel(spielID, spielname, preis, bewertung, listID, imageFromPath));
+                            } else {
+                                spieleListe.add(new GameModel(spielID, spielname, preis, bewertung, listID, null));
+                            }
 
-                            spieleListe.add(new GameModel(spielID, spielname, preis, bewertung, listID, imageFromPath));
 
                         } while (cursor1.moveToNext());
                     }
                     allLists.add(new ListModel(listeid, titel, spieleListe));
                 } while (cursor.moveToNext());
-
             }
         }
     }

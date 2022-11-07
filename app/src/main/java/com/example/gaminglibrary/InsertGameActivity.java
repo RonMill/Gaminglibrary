@@ -1,5 +1,6 @@
 package com.example.gaminglibrary;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +21,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
@@ -35,7 +38,7 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
     //ListModel currentList;
     ActivityResultLauncher<Intent> someActivityResultLauncher;
 
-    private static final int PICK_IMAGE_REQUEST = 100;
+    private int STORAGE_PERMISSION_CODE = 1;
     private Uri imageFilePath;
     private Bitmap imageToStore;
 
@@ -72,8 +75,6 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
                             } catch (IOException e) {
                                 Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-
-
                         }
                     }
                 });
@@ -86,24 +87,28 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View view) {
         if (view.getId() == addGame.getId()) {
-            Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
-            int review = Integer.parseInt(String.valueOf(gameReview.getText()));
-            if (!imageFilePath.equals(null)) { // if user select a picture
-                db.insertSpiel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), String.valueOf(imageFilePath));
-                MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), imageFilePath));
+            if (Integer.parseInt(String.valueOf(gameReview.getText())) <= 5 && Integer.parseInt(String.valueOf(gameReview.getText())) >= 1) {
+                Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
+                int review = Integer.parseInt(String.valueOf(gameReview.getText()));
+                if (imageFilePath == null) { // if user select a picture
+                    db.insertSpiel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), String.valueOf(imageFilePath));
+                    MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), imageFilePath));
+                } else {
+                    db.insertSpiel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId());
+                    MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), null));
+                }
+
+                Toast.makeText(this, "Spiel hinzugefügt", Toast.LENGTH_SHORT).show();
+                this.finish();
             } else {
-                db.insertSpiel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId());
-                MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), null));
+                Toast.makeText(this, "Deine Bewertung ist zu hoch! (Range von 1-5)", Toast.LENGTH_SHORT).show();
             }
 
-            Toast t = Toast.makeText(this, "Spiel hinzugefügt", Toast.LENGTH_SHORT);
-            t.show();
 
-            this.finish();
         } else if (view.getId() == loadPicture.getId()) {
             Intent intent = new Intent();
             intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
             someActivityResultLauncher.launch(intent);
             currentGameImage.setImageBitmap(imageToStore);
         }

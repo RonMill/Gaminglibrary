@@ -14,4 +14,6 @@
     <string name="export">Export</string>
     <string name="insert_game">Spiel hinzufügen</string>
     <string name="open_galery">Bild aus Galerie hinzufügen</string>
+    <string name="delete_list">Liste löschen</string>
+    <string name="save">Speichern</string>
 </resources>

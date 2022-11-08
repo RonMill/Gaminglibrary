@@ -14,10 +14,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ListView;
@@ -214,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.EDIT:
-                Log.d("HS_KL", "EDIT");
+
                 return true;
             case R.id.TAGS:
                 Log.d("HS_KL", "TAGS");
@@ -284,8 +287,6 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 spieleListe.add(new GameModel(spielID, spielname, preis, bewertung, listID, null));
                             }
-
-
                         } while (cursor1.moveToNext());
                     }
                     allLists.add(new ListModel(listeid, titel, spieleListe));

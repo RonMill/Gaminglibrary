@@ -2,34 +2,33 @@ package com.example.gaminglibrary.model;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategorieModel {
-    private int categorieId;
-    private String categorieName;
+    private int categoryID;
+    private String categoryName;
     private List<GameModel> gameModelList;
 
-    public CategorieModel(int categorieId, String categorieName, List<GameModel> gameModelList) {
-        this.categorieId = categorieId;
-        this.categorieName = categorieName;
+    public CategorieModel(int categoryID, String categoryName, List<GameModel> gameModelList) {
+        this.categoryID = categoryID;
+        this.categoryName = categoryName;
         this.gameModelList = gameModelList;
     }
 
-    public int getCategorieId() {
-        return categorieId;
+    public int getCategoryID() {
+        return categoryID;
     }
 
-    public void setCategorieId(int categorieId) {
-        this.categorieId = categorieId;
+    public void setCategoryID(int categoryID) {
+        this.categoryID = categoryID;
     }
 
-    public String getCategorieName() {
-        return categorieName;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setCategorieName(String categorieName) {
-        this.categorieName = categorieName;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public List<GameModel> getGameModelList() {
@@ -57,8 +56,8 @@ public class CategorieModel {
     @Override
     public String toString() {
         return "CategorieModel{" +
-                "categorieId=" + categorieId +
-                ", categorieName='" + categorieName + '\'' +
+                "categorieId=" + categoryID +
+                ", categorieName='" + categoryName + '\'' +
                 ", gameModelList=" + gameModelList +
                 '}';
     }

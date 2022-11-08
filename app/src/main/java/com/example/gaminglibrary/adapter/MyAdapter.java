@@ -1,27 +1,12 @@
-package com.example.gaminglibrary.Adapter;
+package com.example.gaminglibrary.adapter;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.core.app.ActivityCompat;
-
-import com.example.gaminglibrary.InsertGameActivity;
-import com.example.gaminglibrary.MainActivity;
-
-import java.io.IOException;
 
 public class MyAdapter extends CursorAdapter {
     LayoutInflater meinLayoutInflater;

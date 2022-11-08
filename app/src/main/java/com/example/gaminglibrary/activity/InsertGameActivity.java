@@ -1,34 +1,28 @@
-package com.example.gaminglibrary;
+package com.example.gaminglibrary.activity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
+import com.example.gaminglibrary.database.ListenDatenbank;
+import com.example.gaminglibrary.R;
 import com.example.gaminglibrary.model.GameModel;
-import com.example.gaminglibrary.model.ListModel;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class InsertGameActivity extends AppCompatActivity implements View.OnClickListener {
     ListenDatenbank db;

@@ -1,4 +1,4 @@
-package com.example.gaminglibrary;
+package com.example.gaminglibrary.database;
 
 import android.content.ContentValues;
 import android.content.Context;

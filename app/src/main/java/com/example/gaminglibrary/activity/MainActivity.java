@@ -1,47 +1,30 @@
-package com.example.gaminglibrary;
+package com.example.gaminglibrary.activity;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.InputType;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
-import android.view.View;
-import android.view.WindowInsets;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.example.gaminglibrary.Adapter.MyAdapter;
+import com.example.gaminglibrary.adapter.MyAdapter;
+import com.example.gaminglibrary.database.ListenDatenbank;
+import com.example.gaminglibrary.R;
 import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
@@ -70,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.MY_LISTVIEW);
         initDB();
-        addingAlertBox();
+        buildAlertBox();
 
         if (allLists.isEmpty()) {
             //TODO: DIALOG NOCH ERSTELLEN UND HIER ÖFFNEN
@@ -82,10 +65,8 @@ public class MainActivity extends AppCompatActivity {
             //addSomeFakeData();
             Log.d("HS_KL", currentList.toString());
             this.setTitle(allLists.get(0).getName());
+            loadGames();
         }
-
-        loadGames();
-
     }
 
     /**
@@ -117,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Creating alert box, if the user wanna create a new list or the app starts the first time
      */
-    private void addingAlertBox() {
+    private void buildAlertBox() {
         // Set up the alert box
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Liste hinzufügen");
@@ -146,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 currentList = allLists.get(allLists.size() - 1);
             }
         });
-        this.setTitle(allLists.get(allLists.size() - 1).getName());
+        //this.setTitle(allLists.get(allLists.size() - 1).getName());
         dialog = builder.create(); // create current dialog
     }
 

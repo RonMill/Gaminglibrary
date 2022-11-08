@@ -33,6 +33,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    //das hier ist ein test fürs rebasen
+
     static List<ListModel> allLists = new ArrayList<>();
     ListView listView;
     private int STORAGE_PERMISSION_CODE = 1;

@@ -9,7 +9,7 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 public class MyAdapter extends CursorAdapter {
-    LayoutInflater meinLayoutInflater;
+    LayoutInflater myLayoutInflater;
     int itemLayout;
     String[] from;
     int[] to;
@@ -17,7 +17,7 @@ public class MyAdapter extends CursorAdapter {
 
     public MyAdapter(Context ctx, int itemLayout, Cursor c, String[] from, int[] to, int flags) {
         super(ctx, c, flags);
-        meinLayoutInflater = LayoutInflater.from(ctx);
+        myLayoutInflater = LayoutInflater.from(ctx);
         this.itemLayout = itemLayout;
         this.from = from;
         this.to = to;
@@ -25,7 +25,7 @@ public class MyAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context ctx, Cursor c, ViewGroup parent) {
-        View v = meinLayoutInflater.inflate(itemLayout, parent, false);
+        View v = myLayoutInflater.inflate(itemLayout, parent, false);
         return v;
     }
 

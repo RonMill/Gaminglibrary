@@ -33,15 +33,13 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    //test test test
-    //ein test für den master
+    //hier ist ein test im master für rebase
 
     static List<ListModel> allLists = new ArrayList<>();
     ListView listView;
     private int STORAGE_PERMISSION_CODE = 1;
 
 
-    //ich mache hier mal noch ein kommentar im master
 
     //TODO: Später bei verlassen der App currentList in sharedPref saven
     static ListModel currentList;

@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private int STORAGE_PERMISSION_CODE = 1;
 
 
+    //ich mache hier mal noch ein kommentar im master
+
     //TODO: Später bei verlassen der App currentList in sharedPref saven
     static ListModel currentList;
     static ListDatabase listDatabase;

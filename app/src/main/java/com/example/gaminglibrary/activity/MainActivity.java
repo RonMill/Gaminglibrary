@@ -33,7 +33,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    //test für ein Rebase
+    //test für ein Rebase in branch
 
     static List<ListModel> allLists = new ArrayList<>();
     ListView listView;

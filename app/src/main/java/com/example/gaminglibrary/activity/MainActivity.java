@@ -36,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
     //test für ein Rebase in branch
     //test rebase changes in master
 
+
+
+    //ich habe hier weiter Änderungen
+
+
     static List<ListModel> allLists = new ArrayList<>();
     ListView listView;
     private int STORAGE_PERMISSION_CODE = 1;

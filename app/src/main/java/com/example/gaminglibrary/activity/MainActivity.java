@@ -34,6 +34,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     //test test test
+    //ein test für den master
 
     static List<ListModel> allLists = new ArrayList<>();
     ListView listView;

@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,7 +33,6 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
     //ListModel currentList;
     ActivityResultLauncher<Intent> someActivityResultLauncher;
 
-    private int STORAGE_PERMISSION_CODE = 1;
     private Uri imageFilePath;
     private Bitmap imageToStore;
 
@@ -53,13 +53,15 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
         gameReview = (EditText) findViewById(R.id.GAME_REVIEW);
         currentGameImage = (ImageView) findViewById(R.id.GAME_CREATE_IMAGE);
 
+
+        // TODO: Bewertung komma zahlen wegschneiden
         // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
         someActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getResultCode() == RESULT_OK) {
                             try {
                                 // There are no request codes
                                 Intent data = result.getData();
@@ -72,28 +74,29 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
                         }
                     }
                 });
+
+        // on Click listener for each button
         addGame.setOnClickListener(this);
         loadPicture.setOnClickListener(this);
-
-
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == addGame.getId()) {
-            if (Integer.parseInt(String.valueOf(gameReview.getText())) <= 5 && Integer.parseInt(String.valueOf(gameReview.getText())) >= 1) {
+        if (view.getId() == addGame.getId()) { // check which button got pressed
+            int review = (int) Integer.parseInt(String.valueOf(gameReview.getText()));
+            if (review <= 5 && review >= 1) {
                 Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
-                int review = Integer.parseInt(String.valueOf(gameReview.getText()));
-                if (imageFilePath == null) { // if user select a picture
-                    db.insertGame(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), String.valueOf(imageFilePath));
-                    MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), imageFilePath));
+                if (imageFilePath != null) { // if user select a picture
+                    db.insertGame(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId(), String.valueOf(imageFilePath));
+                    MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId(), imageFilePath));
                 } else {
-                    db.insertGame(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId());
-                    MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), null));
+                    db.insertGame(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId());
+                    MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId(), null));
                 }
-
                 Toast.makeText(this, "Spiel hinzugefügt", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK, getIntent());
                 this.finish();
+                return;
             } else {
                 Toast.makeText(this, "Deine Bewertung ist zu hoch! (Range von 1-5)", Toast.LENGTH_SHORT).show();
             }

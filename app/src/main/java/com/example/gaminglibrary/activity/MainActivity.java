@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //ich habe hier weiter Änderungen
+    //test
 
 
     static List<ListModel> allLists = new ArrayList<>();
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         refreshAllLists();
         //listenDatenbank.deleteList(allLists);
         //listenDatenbank.deleteList(searchListModelById(2),allLists);
-        //deleteListByID(1);
+        deleteListByID(1);
         //listenDatenbank.deleteAllGames(allLists);
         //deleteListByID(2);
     }
@@ -161,10 +162,10 @@ public class MainActivity extends AppCompatActivity {
             }
             if (found) {
                 listModel.setId(listModel.getId() - 1);
+                allLists.remove(foundListModel);
+                listDatabase.changeIDs(allLists, id);
             }
         }
-        allLists.remove(foundListModel);
-        listDatabase.changeIDs(allLists, id);
     }
 
     private void addSomeFakeData() {

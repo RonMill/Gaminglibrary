@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         refreshAllLists();
         //listenDatenbank.deleteList(allLists);
         //listenDatenbank.deleteList(searchListModelById(2),allLists);
-        deleteListByID(1);
+        //deleteListByID(1);
         //listenDatenbank.deleteAllGames(allLists);
         //deleteListByID(2);
     }
@@ -219,6 +219,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.EDIT:
+                if(allLists.size()>0 && currentList != null){
+                    Intent i2 = new Intent(this, EditListActivity.class);
+                    startActivity(i2);
+                }else{
+                    showToast("Es existiert keine Liste");
+                }
                 return true;
             case R.id.TAGS:
                 return true;

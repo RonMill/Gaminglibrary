@@ -9,23 +9,23 @@ public class GameModel {
     private String name;
     private float price;
     private int rating;
-    private int listId;
+    private int listID;
     private Uri imageFromPath;
 
-    public GameModel(int id, String name, float price, int rating, int listId, Uri imageFromPath) {
+    public GameModel(int id, String name, float price, int rating, int listID, Uri imageFromPath) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.rating = rating;
-        this.listId = listId;
+        this.listID = listID;
         this.imageFromPath = imageFromPath;
     }
-    public GameModel(int id, String name, float price, int rating, int listId) {
+    public GameModel(int id, String name, float price, int rating, int listID) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.rating = rating;
-        this.listId = listId;
+        this.listID = listID;
     }
 
     public Uri getUri(){
@@ -68,12 +68,12 @@ public class GameModel {
         this.rating = rating;
     }
 
-    public int getListId() {
-        return listId;
+    public int getListID() {
+        return listID;
     }
 
-    public void setListId(int listId) {
-        this.listId = listId;
+    public void setListID(int listID) {
+        this.listID = listID;
     }
 
     @NonNull
@@ -84,7 +84,7 @@ public class GameModel {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", rating=" + rating +
-                ", listId=" + listId +
+                ", listId=" + listID +
                 '}';
     }
 }

@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         //listenDatenbank.deleteList(allLists);
         //listenDatenbank.deleteList(searchListModelById(2),allLists);
         //deleteListByID(1);
-        //listDatabase.deleteAllGames(allLists);
+        //listenDatenbank.deleteAllGames(allLists);
         //deleteListByID(2);
     }
 
@@ -172,10 +172,10 @@ public class MainActivity extends AppCompatActivity {
             }
             if (found) {
                 listModel.setId(listModel.getId() - 1);
+                allLists.remove(foundListModel);
+                listDatabase.changeIDs(allLists, id);
             }
         }
-        allLists.remove(foundListModel);
-        listDatabase.changeIDs(allLists, id);
     }
 
     private void addSomeFakeData() {

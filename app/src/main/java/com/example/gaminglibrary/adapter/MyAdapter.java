@@ -39,7 +39,7 @@ public class MyAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View v, Context ctx, Cursor c) {
-
+        StringBuilder stringBuilder = new StringBuilder();
         if (c.getString(c.getColumnIndexOrThrow(from[0])).equals("null")) {
             // TODO: Default Bild anzeigen lassen
         } else {
@@ -54,10 +54,14 @@ public class MyAdapter extends CursorAdapter {
         String text2 = c.getString(c.getColumnIndexOrThrow(from[2]));
         TextView textView2 = (TextView) v.findViewById(to[2]);
         textView2.setText(text2 + "€");
-        String text3 = c.getString(c.getColumnIndexOrThrow(from[3]));
-        TextView textView3 = (TextView) v.findViewById(to[3]);
-        textView3.setText(" " + text3 + " ★");
+        String text3 = c.getString(c.getColumnIndexOrThrow(from[2]));
+        TextView textView3 = (TextView) v.findViewById(to[2]);
+        for(int i = 0; i<Integer.parseInt(text3);i++)stringBuilder.append("★");
+        textView3.setText(stringBuilder.toString());
 
+        /*} catch (IOException e) {
+            e.printStackTrace();
+        }*/
     }
 }
 

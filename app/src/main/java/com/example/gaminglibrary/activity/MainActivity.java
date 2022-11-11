@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.InputType;
 import android.util.FloatProperty;
 import android.util.Log;
@@ -69,13 +70,14 @@ public class MainActivity extends AppCompatActivity {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             // There are no request codes
                             Intent data = result.getData();
+                            currentList = (ListModel) data.getSerializableExtra("CURRENTLIST");
                             addGameIntoAllLists();
+                            Log.d("HS_KL", currentList.toString());
                         }
                     }
                 });
 
         if (allLists.isEmpty()) {
-            //TODO: DIALOG NOCH ERSTELLEN UND HIER ÖFFNEN
             showToast("Keine Liste gefunden!");
             dialog.show();
         } else {
@@ -243,7 +245,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.INSERT_GAME:
                 if (allLists.size() > 0) {
                     Intent i1 = new Intent(this, InsertGameActivity.class);
-                    //i1.putExtra("CURRENTLIST", (Parcelable) currentList);
+                    i1.putExtra("CURRENTLIST", (Parcelable) currentList);
+                    setResult(Activity.RESULT_OK, i1);
                     someActivityResultLauncher.launch(i1);
                     addGameIntoAllLists();
                 } else {
@@ -295,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("Range")
-    public static void refreshAllLists() {
+    public void refreshAllLists() {
         allLists.clear(); // clear list to avoid double entrys
         try (Cursor cursor = listDatabase.selectAllLists()) {
             if (cursor.getCount() > 0) {

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -25,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.gaminglibrary.database.ListDatabase;
 import com.example.gaminglibrary.R;
 import com.example.gaminglibrary.model.GameModel;
+import com.example.gaminglibrary.model.ListModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +36,7 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
     Button addGame, loadPicture;
     EditText gameName, gamePrice, gameReview;
     ImageView currentGameImage;
-    //ListModel currentList;
+    ListModel currentList;
     ActivityResultLauncher<Intent> someActivityResultLauncher;
 
     private String filePath;
@@ -47,9 +49,9 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_insert_game);
         db = new ListDatabase(this);
         Intent i1 = getIntent();
-        this.setTitle(MainActivity.currentList.getName());
 
-        //currentList = (ListModel) i1.getSerializableExtra("CURRENTLIST");
+        currentList = (ListModel) i1.getSerializableExtra("CURRENTLIST");
+        this.setTitle(currentList.getName());
 
         addGame = (Button) findViewById(R.id.ADD_GAME);
         loadPicture = (Button) findViewById(R.id.ADD_GALARY);
@@ -122,14 +124,16 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
             if (review <= 5 && review >= 1) {
                 Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
                 if (imageFilePath != null) { // if user select a picture
-                    db.insertGame(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId(), filePath);
-                    MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId(), filePath));
+                    db.insertGame(currentList.getGames().size() == 0 ? 1 : currentList.getGames().size(), gameName.getText().toString(), price, review, currentList.getId(), filePath);
+                    currentList.getGames().add(new GameModel(currentList.getGames().size() == 0 ? 1 : currentList.getGames().size(), gameName.getText().toString(), price, review, currentList.getId(), filePath));
                 } else {
-                    db.insertGame(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId());
-                    MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId(), null));
+                    db.insertGame(currentList.getGames().size() == 0 ? 1 : currentList.getGames().size(), gameName.getText().toString(), price, review, currentList.getId());
+                    currentList.getGames().add(new GameModel(currentList.getGames().size() == 0 ? 1 : currentList.getGames().size(), gameName.getText().toString(), price, review, currentList.getId(), null));
                 }
                 Toast.makeText(this, "Spiel hinzugefügt", Toast.LENGTH_SHORT).show();
-                setResult(RESULT_OK, getIntent());
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("CURRENTLIST", (Parcelable) currentList);
+                setResult(RESULT_OK, resultIntent);
                 this.finish();
                 return;
             } else {

@@ -23,7 +23,7 @@ import android.widget.Toast;
 import android.widget.ListView;
 
 import com.example.gaminglibrary.adapter.MyAdapter;
-import com.example.gaminglibrary.database.ListenDatenbank;
+import com.example.gaminglibrary.database.ListDatabase;
 import com.example.gaminglibrary.R;
 import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
@@ -33,6 +33,15 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    //test für ein Rebase in branch
+    //test rebase changes in master
+
+
+
+    //ich habe hier weiter Änderungen
+    //test
+
+
     static List<ListModel> allLists = new ArrayList<>();
     ListView listView;
     private int STORAGE_PERMISSION_CODE = 1;
@@ -40,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO: Später bei verlassen der App currentList in sharedPref saven
     static ListModel currentList;
-    static ListenDatenbank listenDatenbank;
+    static ListDatabase listDatabase;
     AlertDialog dialog;
     public SubMenu subMenu;
 
@@ -57,13 +66,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (allLists.isEmpty()) {
             //TODO: DIALOG NOCH ERSTELLEN UND HIER ÖFFNEN
-            Log.d("HS_KL", "Test");
             showToast("Keine Liste gefunden!");
             dialog.show();
         } else {
             currentList = allLists.get(0);
             //addSomeFakeData();
-            Log.d("HS_KL", currentList.toString());
             this.setTitle(allLists.get(0).getName());
             loadGames();
         }
@@ -75,24 +82,22 @@ public class MainActivity extends AppCompatActivity {
     public void loadGames() {
         Context ctx = this;
         int itemLayout = R.layout.simple_game_layout;
-        Cursor cursor = listenDatenbank.selectAllSpieleFromListe(currentList.getId());
-        String[] from = new String[]{/*listenDatenbank.SPALTE_IMAGE_URI,*/ listenDatenbank.SPALTE_SPIEL_NAME, listenDatenbank.SPALTE_PREIS, listenDatenbank.SPALTE_BEWERTUNG};
-        int[] to = new int[]{/*R.id.MEIN_PERSONEN_BILD,*/ R.id.MEIN_PERSONEN_NAMEN, R.id.MEIN_PERSONEN_ADRESSE, R.id.MEIN_BEWERTUNG};
-        MyAdapter meinAdapter = new MyAdapter(ctx, itemLayout, cursor, from, to, 0);
-        listView.setAdapter(meinAdapter);
+        Cursor cursor = listDatabase.selectAllGamesFromList(currentList.getId());
+        String[] from = new String[]{/*listenDatenbank.SPALTE_IMAGE_URI,*/ listDatabase.TABLE_GAME_NAME, listDatabase.COLUMN_PRICE, listDatabase.COLUMN_RATING};
+        int[] to = new int[]{/*R.id.MEIN_PERSONEN_BILD,*/ R.id.MY_PERSON_NAME, R.id.MY_PERSON_ADRESS, R.id.MY_RATING};
+        MyAdapter myAdapter = new MyAdapter(ctx, itemLayout, cursor, from, to, 0);
+        listView.setAdapter(myAdapter);
     }
 
 
     private void initDB() {
-        listenDatenbank = new ListenDatenbank(this);
+        listDatabase = new ListDatabase(this);
         refreshAllLists();
         //listenDatenbank.deleteList(allLists);
         //listenDatenbank.deleteList(searchListModelById(2),allLists);
-        //deleteListByID(1);
+        deleteListByID(1);
         //listenDatenbank.deleteAllGames(allLists);
-        Log.d("HS_KL", allLists.toString());
         //deleteListByID(2);
-        Log.d("HS_KL", allLists.toString());
     }
 
     /**
@@ -119,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                listenDatenbank.insertListe(allLists.size() + 1, String.valueOf(input.getText())); // save the listname in the db
+                listDatabase.insertList(allLists.size() + 1, String.valueOf(input.getText())); // save the listname in the db
                 allLists.add(new ListModel(allLists.size() + 1, String.valueOf(input.getText()), new ArrayList<>()));
                 showToast("Liste hinzugefügt!");
                 input.setText("");
@@ -151,16 +156,16 @@ public class MainActivity extends AppCompatActivity {
         ListModel foundListModel = null;
         for (ListModel listModel : allLists) {
             if (listModel.getId() == id) {
-                listenDatenbank.deleteList(listModel, allLists);
+                listDatabase.deleteList(listModel, allLists);
                 foundListModel = listModel;
                 found = true;
             }
             if (found) {
                 listModel.setId(listModel.getId() - 1);
+                allLists.remove(foundListModel);
+                listDatabase.changeIDs(allLists, id);
             }
         }
-        allLists.remove(foundListModel);
-        listenDatenbank.changeIDs(allLists, id);
     }
 
     private void addSomeFakeData() {
@@ -170,13 +175,13 @@ public class MainActivity extends AppCompatActivity {
         listenDatenbank.insertListe(4, "DÖNERR1");
         listenDatenbank.insertListe(5, "DÖNERR2");
         listenDatenbank.insertListe(6, "DÖNERR3");*/
-        listenDatenbank.insertSpiel(1, "League1", 1.33F, 3, currentList.getId());
+        listDatabase.insertGame(1, "League1", 1.33F, 3, currentList.getId());
         /*listenDatenbank.insertSpiel(currentList.getGames().size() + 1, "League2", 1.33F, 3, currentList.getId());
         listenDatenbank.insertSpiel(currentList.getGames().size() + 1, "League3", 1.33F, 3, currentList.getId());
         listenDatenbank.insertSpiel(currentList.getGames().size() + 1, "League4", 1.33F, 3, currentList.getId());
         listenDatenbank.insertSpiel(currentList.getGames().size() + 1, "League5", 1.33F, 3, currentList.getId());*/
-        listenDatenbank.insertKategorie(1, 1, "MMOGA");
-        listenDatenbank.insertTag(1, 1, "Killergame");
+        listDatabase.insertCategory(1, 1, "MMOGA");
+        listDatabase.insertTag(1, 1, "Killergame");
     }
 
     /**
@@ -214,22 +219,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.EDIT:
-                Log.d("HS_KL", "EDIT");
                 return true;
             case R.id.TAGS:
-                Log.d("HS_KL", "TAGS");
                 return true;
             case R.id.STATISTIC:
-                Log.d("HS_KL", "STATISTIC");
                 return true;
             case R.id.SETTINGS:
-                Log.d("HS_KL", "SETTINGS");
                 return true;
             case R.id.IMPORT:
-                Log.d("HS_KL", "IMPORT");
                 return true;
             case R.id.EXPORT:
-                Log.d("HS_KL", "EXPORT");
                 return true;
             case R.id.INSERT_GAME:
                 if (allLists.size() > 0) {
@@ -251,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 if (allLists.size() + 1 == item.getItemId()) {
-                    Log.d("HS_KL", "Liste Hinzufügen");
                     dialog.show(); // show dialog to insert a list
                     return true;
                 }
@@ -263,32 +261,32 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("Range")
     public static void refreshAllLists() {
         allLists.clear(); // clear list to avoid double entrys
-        try (Cursor cursor = listenDatenbank.selectAllLists()) {
+        try (Cursor cursor = listDatabase.selectAllLists()) {
             if (cursor.getCount() > 0) {
                 do {
-                    ArrayList<GameModel> spieleListe = new ArrayList<>();
+                    ArrayList<GameModel> gameList = new ArrayList<>();
                     int listeid = cursor.getInt(cursor.getColumnIndexOrThrow("listeid"));
                     String titel = cursor.getString(cursor.getColumnIndexOrThrow("titel"));
-                    Cursor cursor1 = listenDatenbank.selectAllSpieleFromListe(listeid);
+                    Cursor cursor1 = listDatabase.selectAllGamesFromList(listeid);
 
                     if (cursor1.getCount() > 0) {
                         do {
-                            int spielID = cursor1.getInt(cursor1.getColumnIndexOrThrow("_id"));
-                            String spielname = cursor1.getString(cursor1.getColumnIndexOrThrow("spielname"));
-                            float preis = cursor1.getFloat(cursor1.getColumnIndexOrThrow("preis"));
-                            int bewertung = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
+                            int gameID = cursor1.getInt(cursor1.getColumnIndexOrThrow("_id"));
+                            String gameName = cursor1.getString(cursor1.getColumnIndexOrThrow("spielname"));
+                            float price = cursor1.getFloat(cursor1.getColumnIndexOrThrow("preis"));
+                            int rating = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
                             int listID = cursor1.getInt(cursor1.getColumnIndexOrThrow("listeid"));
                             if (!cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")).equals("null")) {
                                 Uri imageFromPath = Uri.parse(cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")));
-                                spieleListe.add(new GameModel(spielID, spielname, preis, bewertung, listID, imageFromPath));
+                                gameList.add(new GameModel(gameID, gameName, price, rating, listID, imageFromPath));
                             } else {
-                                spieleListe.add(new GameModel(spielID, spielname, preis, bewertung, listID, null));
+                                gameList.add(new GameModel(gameID, gameName, price, rating, listID, null));
                             }
 
 
                         } while (cursor1.moveToNext());
                     }
-                    allLists.add(new ListModel(listeid, titel, spieleListe));
+                    allLists.add(new ListModel(listeid, titel, gameList));
                 } while (cursor.moveToNext());
             }
         }

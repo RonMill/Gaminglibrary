@@ -18,14 +18,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.gaminglibrary.database.ListenDatenbank;
+import com.example.gaminglibrary.database.ListDatabase;
 import com.example.gaminglibrary.R;
 import com.example.gaminglibrary.model.GameModel;
 
 import java.io.IOException;
 
 public class InsertGameActivity extends AppCompatActivity implements View.OnClickListener {
-    ListenDatenbank db;
+    ListDatabase db;
     Button addGame, loadPicture;
     EditText gameName, gamePrice, gameReview;
     ImageView currentGameImage;
@@ -40,7 +40,7 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_game);
-        db = new ListenDatenbank(this);
+        db = new ListDatabase(this);
         Intent i1 = getIntent();
         this.setTitle(MainActivity.currentList.getName());
 
@@ -85,10 +85,10 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
                 Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
                 int review = Integer.parseInt(String.valueOf(gameReview.getText()));
                 if (imageFilePath == null) { // if user select a picture
-                    db.insertSpiel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), String.valueOf(imageFilePath));
+                    db.insertGame(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), String.valueOf(imageFilePath));
                     MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), imageFilePath));
                 } else {
-                    db.insertSpiel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId());
+                    db.insertGame(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId());
                     MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() + 1, gameName.getText().toString(), price, review, MainActivity.currentList.getId(), null));
                 }
 

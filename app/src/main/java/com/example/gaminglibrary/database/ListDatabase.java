@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.gaminglibrary.activity.MainActivity;
 import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
@@ -181,12 +182,12 @@ public class ListDatabase extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public void deleteList(ListModel listModel, List<ListModel> allLists) {
+    public void deleteList(ListModel listModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         String where = COLUMN_LIST_ID + "=?";
         String[] whereArg = new String[]{Integer.toString(listModel.getId())};
         db.delete(TABLE_LIST, where, whereArg);
-        //allLists.remove(listModel);
+        MainActivity.allLists.remove(listModel);
     }
 
     public void deleteList(List<ListModel> allLists) {

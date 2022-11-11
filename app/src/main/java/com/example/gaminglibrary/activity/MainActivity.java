@@ -33,16 +33,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    //test für ein Rebase in branch
-    //test rebase changes in master
-
-
-
-    //ich habe hier weiter Änderungen
-    //test
-
-
-    static List<ListModel> allLists = new ArrayList<>();
+    public static List<ListModel> allLists = new ArrayList<>();
     ListView listView;
     private int STORAGE_PERMISSION_CODE = 1;
 
@@ -151,19 +142,21 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param id ID from list
      */
-    private void deleteListByID(int id) {
+    public static void deleteListByID(int id) {
         boolean found = false;
         ListModel foundListModel = null;
         for (ListModel listModel : allLists) {
             if (listModel.getId() == id) {
-                listDatabase.deleteList(listModel, allLists);
+                listDatabase.deleteList(listModel);
                 foundListModel = listModel;
                 found = true;
             }
             if (found) {
-                listModel.setId(listModel.getId() - 1);
+                //listModel.setId(listModel.getId() - 1);
+                //foundListModel weil ListModel in der for nicht angepackt werden darf
                 allLists.remove(foundListModel);
                 listDatabase.changeIDs(allLists, id);
+                break;
             }
         }
     }

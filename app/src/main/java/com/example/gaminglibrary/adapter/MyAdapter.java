@@ -31,6 +31,7 @@ public class MyAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View v, Context ctx, Cursor c) {
+        StringBuilder stringBuilder = new StringBuilder();
         //try {
             /*Uri myUri = Uri.parse(c.getString(c.getColumnIndexOrThrow(from[0])));
             ImageView imageView = (ImageView) v.findViewById(to[0]);
@@ -44,7 +45,8 @@ public class MyAdapter extends CursorAdapter {
         textView2.setText(text2 + "€");
         String text3 = c.getString(c.getColumnIndexOrThrow(from[2]));
         TextView textView3 = (TextView) v.findViewById(to[2]);
-        textView3.setText(" " + text3 + " ★");
+        for(int i = 0; i<Integer.parseInt(text3);i++)stringBuilder.append("★");
+        textView3.setText(stringBuilder.toString());
 
         /*} catch (IOException e) {
             e.printStackTrace();

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO: Später bei verlassen der App currentList in sharedPref saven
     static ListModel currentList;
-    static ListDatabase listDatabase;
+    ListDatabase listDatabase;
     AlertDialog dialog;
     public SubMenu subMenu;
 
@@ -142,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param id ID from list
      */
-    public static void deleteListByID(int id) {
+    public void deleteListByID(int id) {
         boolean found = false;
         ListModel foundListModel = null;
         for (ListModel listModel : allLists) {
@@ -212,10 +213,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.EDIT:
-                if(allLists.size()>0 && currentList != null){
+                if (allLists.size() > 0 && currentList != null) {
                     Intent i2 = new Intent(this, EditListActivity.class);
+                    i2.putExtra("CURRENTLIST", (Parcelable) currentList);
                     startActivity(i2);
-                }else{
+                } else {
                     showToast("Es existiert keine Liste");
                 }
                 return true;
@@ -258,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     @SuppressLint("Range")
-    public static void refreshAllLists() {
+    public void refreshAllLists() {
         allLists.clear(); // clear list to avoid double entrys
         try (Cursor cursor = listDatabase.selectAllLists()) {
             if (cursor.getCount() > 0) {
@@ -275,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
                             float price = cursor1.getFloat(cursor1.getColumnIndexOrThrow("preis"));
                             int rating = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
                             int listID = cursor1.getInt(cursor1.getColumnIndexOrThrow("listeid"));
-                            if (!cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")).equals("null")) {
+                            if (cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")) == null) {
                                 Uri imageFromPath = Uri.parse(cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")));
                                 gameList.add(new GameModel(gameID, gameName, price, rating, listID, imageFromPath));
                             } else {

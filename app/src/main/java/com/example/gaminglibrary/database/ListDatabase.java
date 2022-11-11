@@ -190,6 +190,14 @@ public class ListDatabase extends SQLiteOpenHelper {
         MainActivity.allLists.remove(listModel);
     }
 
+    public void deleteListWithID(int id) {
+        Log.d("HS_KL", "inside delete");
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = COLUMN_LIST_ID + "=?";
+        String[] whereArg = new String[]{Integer.toString(id)};
+        db.delete(TABLE_LIST, where, whereArg);
+    }
+
     public void deleteList(List<ListModel> allLists) {
         for (ListModel listModel : allLists) {
             SQLiteDatabase db = this.getWritableDatabase();

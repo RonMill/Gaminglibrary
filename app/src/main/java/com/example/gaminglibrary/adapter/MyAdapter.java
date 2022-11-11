@@ -13,6 +13,8 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.gaminglibrary.R;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -22,6 +24,7 @@ public class MyAdapter extends CursorAdapter {
     String[] from;
     int[] to;
     private int STORAGE_PERMISSION_CODE = 1;
+    ImageView currentGameImage;
 
     public MyAdapter(Context ctx, int itemLayout, Cursor c, String[] from, int[] to, int flags) {
         super(ctx, c, flags);
@@ -40,8 +43,10 @@ public class MyAdapter extends CursorAdapter {
     @Override
     public void bindView(View v, Context ctx, Cursor c) {
         StringBuilder stringBuilder = new StringBuilder();
-        if (c.getString(c.getColumnIndexOrThrow(from[0])).equals("null")) {
-            // TODO: Default Bild anzeigen lassen
+        if (c.getString(c.getColumnIndexOrThrow(from[0])) == null) {
+
+
+
         } else {
             File imagePath = new File(c.getString(c.getColumnIndexOrThrow(from[0])));
             ImageView imageView = (ImageView) v.findViewById(to[0]);
@@ -54,8 +59,8 @@ public class MyAdapter extends CursorAdapter {
         String text2 = c.getString(c.getColumnIndexOrThrow(from[2]));
         TextView textView2 = (TextView) v.findViewById(to[2]);
         textView2.setText(text2 + "€");
-        String text3 = c.getString(c.getColumnIndexOrThrow(from[2]));
-        TextView textView3 = (TextView) v.findViewById(to[2]);
+        String text3 = c.getString(c.getColumnIndexOrThrow(from[3]));
+        TextView textView3 = (TextView) v.findViewById(to[3]);
         for(int i = 0; i<Integer.parseInt(text3);i++)stringBuilder.append("★");
         textView3.setText(stringBuilder.toString());
 

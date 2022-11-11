@@ -2,11 +2,19 @@ package com.example.gaminglibrary.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.IOException;
 
 public class MyAdapter extends CursorAdapter {
     LayoutInflater myLayoutInflater;
@@ -31,24 +39,25 @@ public class MyAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View v, Context ctx, Cursor c) {
-        //try {
-            /*Uri myUri = Uri.parse(c.getString(c.getColumnIndexOrThrow(from[0])));
+
+        if (c.getString(c.getColumnIndexOrThrow(from[0])).equals("null")) {
+            // TODO: Default Bild anzeigen lassen
+        } else {
+            File imagePath = new File(c.getString(c.getColumnIndexOrThrow(from[0])));
             ImageView imageView = (ImageView) v.findViewById(to[0]);
-            Bitmap imageToStore = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), myUri);
-            imageView.setImageBitmap(imageToStore);*/
-        String text1 = c.getString(c.getColumnIndexOrThrow(from[0]));
-        TextView textView1 = (TextView) v.findViewById(to[0]);
+            Bitmap imageToStore = BitmapFactory.decodeFile(imagePath.getAbsolutePath());
+            imageView.setImageBitmap(imageToStore);
+        }
+        String text1 = c.getString(c.getColumnIndexOrThrow(from[1]));
+        TextView textView1 = (TextView) v.findViewById(to[1]);
         textView1.setText(text1);
-        String text2 = c.getString(c.getColumnIndexOrThrow(from[1]));
-        TextView textView2 = (TextView) v.findViewById(to[1]);
+        String text2 = c.getString(c.getColumnIndexOrThrow(from[2]));
+        TextView textView2 = (TextView) v.findViewById(to[2]);
         textView2.setText(text2 + "€");
-        String text3 = c.getString(c.getColumnIndexOrThrow(from[2]));
-        TextView textView3 = (TextView) v.findViewById(to[2]);
+        String text3 = c.getString(c.getColumnIndexOrThrow(from[3]));
+        TextView textView3 = (TextView) v.findViewById(to[3]);
         textView3.setText(" " + text3 + " ★");
 
-        /*} catch (IOException e) {
-            e.printStackTrace();
-        }*/
     }
 }
 

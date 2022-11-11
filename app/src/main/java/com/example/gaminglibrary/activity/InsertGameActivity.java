@@ -2,9 +2,12 @@ package com.example.gaminglibrary.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +26,7 @@ import com.example.gaminglibrary.database.ListDatabase;
 import com.example.gaminglibrary.R;
 import com.example.gaminglibrary.model.GameModel;
 
+import java.io.File;
 import java.io.IOException;
 
 public class InsertGameActivity extends AppCompatActivity implements View.OnClickListener {
@@ -33,6 +37,7 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
     //ListModel currentList;
     ActivityResultLauncher<Intent> someActivityResultLauncher;
 
+    private String filePath;
     private Uri imageFilePath;
     private Bitmap imageToStore;
 
@@ -67,7 +72,37 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
                                 Intent data = result.getData();
                                 imageFilePath = data.getData();
                                 imageToStore = MediaStore.Images.Media.getBitmap(getContentResolver(), imageFilePath);
-                                currentGameImage.setImageBitmap(imageToStore);
+
+                                grantUriPermission(
+                                        getPackageName(), imageFilePath,
+                                        Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION |
+                                                Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                                getContentResolver().takePersistableUriPermission(
+                                        imageFilePath, Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                                String wholeID = DocumentsContract.getDocumentId(data.getData());
+                                String id = wholeID.split(":")[1];
+                                String[] column = { MediaStore.Images.Media.DATA };
+                                String sel = MediaStore.Images.Media._ID + "=?";
+                                Cursor cursor = getContentResolver().
+                                        query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                                column, sel, new String[]{ id }, null);
+
+                                int columnIndex = cursor.getColumnIndex(column[0]);
+
+                                if (cursor.moveToFirst()) {
+                                    filePath = cursor.getString(columnIndex);
+                                }
+                                File imgFile = new File(filePath);
+                                Log.d("HS_KL", filePath);
+                                Log.d("HS_KL", imgFile.getAbsolutePath());
+
+                                if(imgFile.exists()){
+                                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                                    currentGameImage.setImageBitmap(myBitmap);
+                                }
                             } catch (IOException e) {
                                 Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
@@ -87,8 +122,8 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
             if (review <= 5 && review >= 1) {
                 Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
                 if (imageFilePath != null) { // if user select a picture
-                    db.insertGame(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId(), String.valueOf(imageFilePath));
-                    MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId(), imageFilePath));
+                    db.insertGame(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId(), filePath);
+                    MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId(), filePath));
                 } else {
                     db.insertGame(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId());
                     MainActivity.currentList.getGames().add(new GameModel(MainActivity.currentList.getGames().size() == 0 ? 1 : MainActivity.currentList.getGames().size(), gameName.getText().toString(), price, review, MainActivity.currentList.getId(), null));

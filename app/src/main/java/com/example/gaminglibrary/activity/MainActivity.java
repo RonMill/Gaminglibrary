@@ -89,12 +89,12 @@ public class MainActivity extends AppCompatActivity {
     /**
      * load all games into adapter --> Show all games from the current list on the start page
      */
-    public void loadGames() {
+    private void loadGames() {
         Context ctx = this;
         int itemLayout = R.layout.simple_game_layout;
         Cursor cursor = listDatabase.selectAllGamesFromList(currentList.getId());
-        String[] from = new String[]{/*listenDatenbank.SPALTE_IMAGE_URI,*/ listDatabase.TABLE_GAME_NAME, listDatabase.COLUMN_PRICE, listDatabase.COLUMN_RATING};
-        int[] to = new int[]{/*R.id.MEIN_PERSONEN_BILD,*/ R.id.MY_PERSON_NAME, R.id.MY_PERSON_ADRESS, R.id.MY_RATING};
+        String[] from = new String[]{listDatabase.COLUMN_IMAGE_URI, listDatabase.TABLE_GAME_NAME, listDatabase.COLUMN_PRICE, listDatabase.COLUMN_RATING};
+        int[] to = new int[]{R.id.MY_PERSON_PICTURE, R.id.MY_PERSON_NAME, R.id.MY_PERSON_ADRESS, R.id.MY_RATING};
         MyAdapter myAdapter = new MyAdapter(ctx, itemLayout, cursor, from, to, 0);
         listView.setAdapter(myAdapter);
     }
@@ -271,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * add new game into all Lists
      */
-    public void addGameIntoAllLists() {
+    private void addGameIntoAllLists() {
         loadGames();
         try (Cursor cursor = listDatabase.selectAllGamesFromList(currentList.getId())) {
             if (cursor.getCount() > 0) {
@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
                         int rating = cursor.getInt(cursor.getColumnIndexOrThrow("bewertung"));
                         int listID = cursor.getInt(cursor.getColumnIndexOrThrow("listeid"));
                         if (cursor.getString(cursor.getColumnIndexOrThrow("imageUri")) != null) {
-                            Uri imageFromPath = Uri.parse(cursor.getString(cursor.getColumnIndexOrThrow("imageUri")));
+                            String imageFromPath = cursor.getString(cursor.getColumnIndexOrThrow("imageUri"));
                             currentList.getGames().add(new GameModel(gameID, gameName, price, rating, listID, imageFromPath));
                         } else {
                             currentList.getGames().add(new GameModel(gameID, gameName, price, rating, listID, null));
@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                             int rating = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
                             int listID = cursor1.getInt(cursor1.getColumnIndexOrThrow("listeid"));
                             if (cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")) != null) {
-                                Uri imageFromPath = Uri.parse(cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")));
+                                String imageFromPath = cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri"));
                                 gameList.add(new GameModel(gameID, gameName, price, rating, listID, imageFromPath));
                             } else {
                                 gameList.add(new GameModel(gameID, gameName, price, rating, listID, null));

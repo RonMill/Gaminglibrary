@@ -10,9 +10,9 @@ public class GameModel {
     private float price;
     private int rating;
     private int listID;
-    private Uri imageFromPath;
+    private String imageFromPath;
 
-    public GameModel(int id, String name, float price, int rating, int listID, Uri imageFromPath) {
+    public GameModel(int id, String name, float price, int rating, int listID, String imageFromPath) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -26,14 +26,6 @@ public class GameModel {
         this.price = price;
         this.rating = rating;
         this.listID = listID;
-    }
-
-    public Uri getUri(){
-        return this.imageFromPath;
-    }
-
-    public void setUri(Uri imageFromPath){
-        this.imageFromPath = imageFromPath;
     }
 
     public int getId() {

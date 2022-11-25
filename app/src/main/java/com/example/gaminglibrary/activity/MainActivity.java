@@ -199,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
+
     private void updateSubMenu() {
         subMenu.clear();
         for (ListModel s : allLists) {

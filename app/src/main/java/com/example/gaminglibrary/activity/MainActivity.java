@@ -108,8 +108,8 @@ public class MainActivity extends AppCompatActivity {
         refreshAllLists();
         //listenDatenbank.deleteList(allLists);
         //listenDatenbank.deleteList(searchListModelById(2),allLists);
-        deleteListByID(1);
-        //listenDatenbank.deleteAllGames(allLists);
+        //listDatabase.deleteAllGames(allLists);
+        //deleteListByID(1);
         //deleteListByID(2);
     }
 
@@ -263,7 +263,6 @@ public class MainActivity extends AppCompatActivity {
                     i1.putExtra("CURRENTLIST", (Parcelable) currentList);
                     setResult(Activity.RESULT_OK, i1);
                     someActivityResultLauncher.launch(i1);
-                    addGameIntoAllLists();
                 } else {
                     showToast("Es existiert keine Liste!");
                 }
@@ -290,7 +289,6 @@ public class MainActivity extends AppCompatActivity {
      * add new game into all Lists
      */
     private void addGameIntoAllLists() {
-        loadGames();
         try (Cursor cursor = listDatabase.selectAllGamesFromList(currentList.getId())) {
             if (cursor.getCount() > 0) {
                 do {
@@ -302,14 +300,15 @@ public class MainActivity extends AppCompatActivity {
                         int listID = cursor.getInt(cursor.getColumnIndexOrThrow("listeid"));
                         if (cursor.getString(cursor.getColumnIndexOrThrow("imageUri")) != null) {
                             String imageFromPath = cursor.getString(cursor.getColumnIndexOrThrow("imageUri"));
-                            currentList.getGames().add(new GameModel(gameID, gameName, price, rating, listID, imageFromPath));
+                            allLists.get(currentList.getId()-1).getGames().add(new GameModel(gameID, gameName, price, rating, listID, imageFromPath));
                         } else {
-                            currentList.getGames().add(new GameModel(gameID, gameName, price, rating, listID, null));
+                            allLists.get(currentList.getId()-1).getGames().add(new GameModel(gameID, gameName, price, rating, listID, null));
                         }
                     }
                 } while (cursor.moveToNext());
             }
         }
+        loadGames(currentList.getGames());
     }
 
     @SuppressLint("Range")

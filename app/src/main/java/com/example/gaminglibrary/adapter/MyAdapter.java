@@ -44,6 +44,10 @@ public class MyAdapter extends ArrayAdapter<GameModel> {
         View listItem = convertView;
         if (listItem == null) listItem = LayoutInflater.from(mainContext).inflate(R.layout.simple_game_layout,parent,false);
         GameModel gameModel = gameModelList.get(position);
+
+        ImageView imageView = (ImageView) listItem.findViewById(R.id.MY_PERSON_PICTURE);
+        Bitmap imageToStore = BitmapFactory.decodeFile(gameModel.getImageFromPath());
+        imageView.setImageBitmap(imageToStore);
         TextView name = (TextView) listItem.findViewById(R.id.MY_PERSON_NAME);
         name.setText(gameModel.getName());
         TextView price = (TextView) listItem.findViewById(R.id.MY_PERSON_ADRESS);

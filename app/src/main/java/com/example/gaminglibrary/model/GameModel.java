@@ -93,6 +93,10 @@ public class GameModel implements Comparable<GameModel>, Parcelable {
         this.listID = listID;
     }
 
+    public String getImageFromPath() {
+        return imageFromPath;
+    }
+
     @NonNull
     @Override
     public String toString() {

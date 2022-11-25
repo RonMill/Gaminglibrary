@@ -1,10 +1,15 @@
 package com.example.gaminglibrary.activity;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Context;
@@ -13,7 +18,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.InputType;
+import android.util.FloatProperty;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     static List<ListModel> allLists = new ArrayList<>();
     ListView listView;
     private int STORAGE_PERMISSION_CODE = 1;
-    private boolean sorting = false;
     private MyAdapter myAdapter;
 
 
@@ -49,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     static ListDatabase listDatabase;
     AlertDialog dialog;
     public SubMenu subMenu;
+    ActivityResultLauncher<Intent> someActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +67,21 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.MY_LISTVIEW);
         initDB();
         buildAlertBox();
+
+        someActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            // There are no request codes
+                            Intent data = result.getData();
+                            currentList = (ListModel) data.getSerializableExtra("CURRENTLIST");
+                            addGameIntoAllLists();
+                            Log.d("HS_KL", currentList.toString());
+                        }
+                    }
+                });
 
         if (allLists.isEmpty()) {
             showToast("Keine Liste gefunden!");
@@ -80,17 +102,14 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(myAdapter);
     }
 
+
     private void initDB() {
         listDatabase = new ListDatabase(this);
         refreshAllLists();
         //listenDatenbank.deleteList(allLists);
         //listenDatenbank.deleteList(searchListModelById(2),allLists);
-        //deleteListByID(1);
-        listDatabase.deleteAllGames(allLists);
-        listDatabase.insertGame(1,"Simon",60F,5,1, "null");
-        listDatabase.insertGame(2,"Benni",59F,4,1,"null");
-        listDatabase.insertGame(3,"Ronny",58F,3,1, "null");
-        listDatabase.insertGame(4,"Niklas",60F,2,1, "null");
+        deleteListByID(1);
+        //listenDatenbank.deleteAllGames(allLists);
         //deleteListByID(2);
     }
 
@@ -199,8 +218,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
-
     private void updateSubMenu() {
         subMenu.clear();
         for (ListModel s : allLists) {
@@ -243,8 +260,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.INSERT_GAME:
                 if (allLists.size() > 0) {
                     Intent i1 = new Intent(this, InsertGameActivity.class);
-                    //i1.putExtra("CURRENTLIST", (Parcelable) currentList);
-                    startActivity(i1);
+                    i1.putExtra("CURRENTLIST", (Parcelable) currentList);
+                    setResult(Activity.RESULT_OK, i1);
+                    someActivityResultLauncher.launch(i1);
+                    addGameIntoAllLists();
                 } else {
                     showToast("Es existiert keine Liste!");
                 }
@@ -267,9 +286,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * add new game into all Lists
+     */
+    private void addGameIntoAllLists() {
+        loadGames();
+        try (Cursor cursor = listDatabase.selectAllGamesFromList(currentList.getId())) {
+            if (cursor.getCount() > 0) {
+                do {
+                    if (cursor.getInt(cursor.getColumnIndexOrThrow("_id")) == currentList.getGames().size()) {
+                        int gameID = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
+                        String gameName = cursor.getString(cursor.getColumnIndexOrThrow("spielname"));
+                        float price = cursor.getFloat(cursor.getColumnIndexOrThrow("preis"));
+                        int rating = cursor.getInt(cursor.getColumnIndexOrThrow("bewertung"));
+                        int listID = cursor.getInt(cursor.getColumnIndexOrThrow("listeid"));
+                        if (cursor.getString(cursor.getColumnIndexOrThrow("imageUri")) != null) {
+                            String imageFromPath = cursor.getString(cursor.getColumnIndexOrThrow("imageUri"));
+                            currentList.getGames().add(new GameModel(gameID, gameName, price, rating, listID, imageFromPath));
+                        } else {
+                            currentList.getGames().add(new GameModel(gameID, gameName, price, rating, listID, null));
+                        }
+                    }
+                } while (cursor.moveToNext());
+            }
+        }
+    }
 
     @SuppressLint("Range")
-    public static void refreshAllLists() {
+    public void refreshAllLists() {
         allLists.clear(); // clear list to avoid double entrys
         try (Cursor cursor = listDatabase.selectAllLists()) {
             if (cursor.getCount() > 0) {
@@ -286,9 +330,12 @@ public class MainActivity extends AppCompatActivity {
                             float price = cursor1.getFloat(cursor1.getColumnIndexOrThrow("preis"));
                             int rating = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
                             int listID = cursor1.getInt(cursor1.getColumnIndexOrThrow("listeid"));
-
+                            if (cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")) != null) {
+                                String imageFromPath = cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri"));
+                                gameList.add(new GameModel(gameID, gameName, price, rating, listID, imageFromPath));
+                            } else {
                                 gameList.add(new GameModel(gameID, gameName, price, rating, listID, null));
-
+                            }
 
 
                         } while (cursor1.moveToNext());

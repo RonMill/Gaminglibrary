@@ -20,6 +20,24 @@ public class ListModel implements Parcelable, Serializable {
         this.games = games;
     }
 
+    protected ListModel(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        games = in.readArrayList(GameModel.class.getClassLoader());
+    }
+
+    public static final Creator<ListModel> CREATOR = new Creator<ListModel>() {
+        @Override
+        public ListModel createFromParcel(Parcel in) {
+            return new ListModel(in);
+        }
+
+        @Override
+        public ListModel[] newArray(int size) {
+            return new ListModel[size];
+        }
+    };
+
     public int getId() {
         return id;
     }

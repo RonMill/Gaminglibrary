@@ -6,7 +6,11 @@
     Editieren = @drawable/ic_mode_edit_white_48dp
     Hinzufügen = @drawable/ic_add_black_48dp
     Löschen = @drawable/ic_delete_black_48dp
-    Einstellen = @drawable/ic_settings_white_48dp -->
+    Einstellen = @drawable/ic_settings_white_48dp
+    Sortieren = @drawable/icon_sort_white
+    Link:
+    SortIcon: @strings/icon_link
+    -->
 
     <item
         android:id="@+id/MY_LISTS"
@@ -23,6 +27,18 @@
         android:icon="@drawable/ic_mode_edit_white_48dp"
         android:title="@string/edit"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/SORT_LETTER"
+        android:icon="@drawable/icon_sort_letter_white"
+        app:showAsAction="always"
+        android:title="TODO" />
+
+    <item
+        android:id="@+id/SORT_NUMBER"
+        android:icon="@drawable/icon_sort_number_white"
+        app:showAsAction="always"
+        android:title="TODO" />
 
     <item
         android:id="@+id/TAGS"

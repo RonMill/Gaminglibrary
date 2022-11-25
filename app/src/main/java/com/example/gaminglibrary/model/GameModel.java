@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
-public class GameModel {
+public class GameModel implements Comparable<GameModel>{
     private int id;
     private String name;
     private float price;
@@ -86,5 +86,10 @@ public class GameModel {
                 ", rating=" + rating +
                 ", listId=" + listID +
                 '}';
+    }
+
+    @Override
+    public int compareTo(GameModel other) {
+        return this.name.compareTo(other.getName());
     }
 }

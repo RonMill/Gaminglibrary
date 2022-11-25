@@ -1,56 +1,47 @@
 package com.example.gaminglibrary.adapter;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class MyAdapter extends CursorAdapter {
-    LayoutInflater myLayoutInflater;
-    int itemLayout;
-    String[] from;
-    int[] to;
-    private int STORAGE_PERMISSION_CODE = 1;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-    public MyAdapter(Context ctx, int itemLayout, Cursor c, String[] from, int[] to, int flags) {
-        super(ctx, c, flags);
-        myLayoutInflater = LayoutInflater.from(ctx);
-        this.itemLayout = itemLayout;
-        this.from = from;
-        this.to = to;
+import com.example.gaminglibrary.R;
+import com.example.gaminglibrary.model.GameModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MyAdapter extends ArrayAdapter<GameModel> {
+
+    private Context mainContext;
+    private ArrayList<GameModel> gameModelList;
+
+    public MyAdapter(@NonNull Context context, ArrayList<GameModel> arrayList) {
+        super(context, 0, arrayList);
+        mainContext = context;
+        gameModelList = arrayList;
     }
 
+    @NonNull
     @Override
-    public View newView(Context ctx, Cursor c, ViewGroup parent) {
-        View v = myLayoutInflater.inflate(itemLayout, parent, false);
-        return v;
-    }
-
-    @Override
-    public void bindView(View v, Context ctx, Cursor c) {
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        View listItem = convertView;
+        if (listItem == null) listItem = LayoutInflater.from(mainContext).inflate(R.layout.simple_game_layout,parent,false);
+        GameModel gameModel = gameModelList.get(position);
+        TextView name = (TextView) listItem.findViewById(R.id.MY_PERSON_NAME);
+        name.setText(gameModel.getName());
+        TextView price = (TextView) listItem.findViewById(R.id.MY_PERSON_ADRESS);
+        price.setText(String.valueOf(gameModel.getPrice()));
+        TextView rating = (TextView) listItem.findViewById(R.id.MY_RATING);
         StringBuilder stringBuilder = new StringBuilder();
-        //try {
-            /*Uri myUri = Uri.parse(c.getString(c.getColumnIndexOrThrow(from[0])));
-            ImageView imageView = (ImageView) v.findViewById(to[0]);
-            Bitmap imageToStore = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), myUri);
-            imageView.setImageBitmap(imageToStore);*/
-        String text1 = c.getString(c.getColumnIndexOrThrow(from[0]));
-        TextView textView1 = (TextView) v.findViewById(to[0]);
-        textView1.setText(text1);
-        String text2 = c.getString(c.getColumnIndexOrThrow(from[1]));
-        TextView textView2 = (TextView) v.findViewById(to[1]);
-        textView2.setText(text2 + "€");
-        String text3 = c.getString(c.getColumnIndexOrThrow(from[2]));
-        TextView textView3 = (TextView) v.findViewById(to[2]);
-        for(int i = 0; i<Integer.parseInt(text3);i++)stringBuilder.append("★");
-        textView3.setText(stringBuilder.toString());
-
-        /*} catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        for (int i = 0; i< gameModel.getRating();i++)stringBuilder.append("★");
+        rating.setText(stringBuilder);
+        return listItem;
     }
 }
 

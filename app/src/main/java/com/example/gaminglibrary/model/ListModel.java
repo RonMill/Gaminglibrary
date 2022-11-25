@@ -12,9 +12,9 @@ import java.util.List;
 public class ListModel implements Parcelable, Serializable {
     private int id;
     private String name;
-    private List<GameModel> games;
+    private ArrayList<GameModel> games;
 
-    public ListModel(int id, String name, List<GameModel> games) {
+    public ListModel(int id, String name, ArrayList<GameModel> games) {
         this.id = id;
         this.name = name;
         this.games = games;
@@ -36,11 +36,11 @@ public class ListModel implements Parcelable, Serializable {
         this.name = name;
     }
 
-    public List<GameModel> getGames() {
+    public ArrayList<GameModel> getGames() {
         return games;
     }
 
-    public void setGames(List<GameModel> games) {
+    public void setGames(ArrayList<GameModel> games) {
         this.games = games;
     }
 

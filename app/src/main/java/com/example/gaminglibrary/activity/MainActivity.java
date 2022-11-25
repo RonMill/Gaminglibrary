@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -29,22 +30,18 @@ import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
-    //test für ein Rebase in branch
-    //test rebase changes in master
-
-
-
-    //ich habe hier weiter Änderungen
-    //test
-
 
     static List<ListModel> allLists = new ArrayList<>();
     ListView listView;
     private int STORAGE_PERMISSION_CODE = 1;
+    private boolean sorting = false;
+    private MyAdapter myAdapter;
 
 
     //TODO: Später bei verlassen der App currentList in sharedPref saven
@@ -65,38 +62,35 @@ public class MainActivity extends AppCompatActivity {
         buildAlertBox();
 
         if (allLists.isEmpty()) {
-            //TODO: DIALOG NOCH ERSTELLEN UND HIER ÖFFNEN
             showToast("Keine Liste gefunden!");
             dialog.show();
         } else {
             currentList = allLists.get(0);
             //addSomeFakeData();
             this.setTitle(allLists.get(0).getName());
-            loadGames();
+            loadGames(currentList.getGames());
         }
     }
 
     /**
      * load all games into adapter --> Show all games from the current list on the start page
      */
-    public void loadGames() {
-        Context ctx = this;
-        int itemLayout = R.layout.simple_game_layout;
-        Cursor cursor = listDatabase.selectAllGamesFromList(currentList.getId());
-        String[] from = new String[]{/*listenDatenbank.SPALTE_IMAGE_URI,*/ listDatabase.TABLE_GAME_NAME, listDatabase.COLUMN_PRICE, listDatabase.COLUMN_RATING};
-        int[] to = new int[]{/*R.id.MEIN_PERSONEN_BILD,*/ R.id.MY_PERSON_NAME, R.id.MY_PERSON_ADRESS, R.id.MY_RATING};
-        MyAdapter myAdapter = new MyAdapter(ctx, itemLayout, cursor, from, to, 0);
+    public void loadGames(ArrayList<GameModel> arrayList) {
+        myAdapter = new MyAdapter(this,arrayList);
         listView.setAdapter(myAdapter);
     }
-
 
     private void initDB() {
         listDatabase = new ListDatabase(this);
         refreshAllLists();
         //listenDatenbank.deleteList(allLists);
         //listenDatenbank.deleteList(searchListModelById(2),allLists);
-        deleteListByID(1);
-        //listenDatenbank.deleteAllGames(allLists);
+        //deleteListByID(1);
+        listDatabase.deleteAllGames(allLists);
+        listDatabase.insertGame(1,"Simon",60F,5,1, "null");
+        listDatabase.insertGame(2,"Benni",59F,4,1,"null");
+        listDatabase.insertGame(3,"Ronny",58F,3,1, "null");
+        listDatabase.insertGame(4,"Niklas",60F,2,1, "null");
         //deleteListByID(2);
     }
 
@@ -220,6 +214,20 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.EDIT:
                 return true;
+            case R.id.SORT_LETTER:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    ArrayList<GameModel> arrayList = new ArrayList<>(currentList.getGames());
+                    arrayList.sort(Comparator.comparing(GameModel::getName));
+                    loadGames(arrayList);
+                }
+                return true;
+            case R.id.SORT_NUMBER:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    ArrayList<GameModel> arrayList = new ArrayList<>(currentList.getGames());
+                    arrayList.sort(Comparator.comparing(GameModel::getPrice));
+                    loadGames(arrayList);
+                }
+                return true;
             case R.id.TAGS:
                 return true;
             case R.id.STATISTIC:
@@ -245,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("HS_KL", listModel.getName());
                         currentList = listModel;
                         this.setTitle(listModel.getName());
-                        loadGames();
+                        loadGames(currentList.getGames());
                         return true;
                     }
                 }
@@ -276,12 +284,9 @@ public class MainActivity extends AppCompatActivity {
                             float price = cursor1.getFloat(cursor1.getColumnIndexOrThrow("preis"));
                             int rating = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
                             int listID = cursor1.getInt(cursor1.getColumnIndexOrThrow("listeid"));
-                            if (!cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")).equals("null")) {
-                                Uri imageFromPath = Uri.parse(cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")));
-                                gameList.add(new GameModel(gameID, gameName, price, rating, listID, imageFromPath));
-                            } else {
+
                                 gameList.add(new GameModel(gameID, gameName, price, rating, listID, null));
-                            }
+
 
 
                         } while (cursor1.moveToNext());

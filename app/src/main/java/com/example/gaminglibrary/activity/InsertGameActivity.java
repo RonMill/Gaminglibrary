@@ -124,11 +124,11 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
             if (review <= 5 && review >= 1) {
                 Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
                 if (imageFilePath != null) { // if user select a picture
-                    db.insertGame(currentList.getGames().size() == 0 ? 1 : currentList.getGames().size(), gameName.getText().toString(), price, review, currentList.getId(), filePath);
                     currentList.getGames().add(new GameModel(currentList.getGames().size() == 0 ? 1 : currentList.getGames().size(), gameName.getText().toString(), price, review, currentList.getId(), filePath));
+                    db.insertGame(currentList.getGames().size() == 0 ? 1 : currentList.getGames().size(), gameName.getText().toString(), price, review, currentList.getId(), filePath);
                 } else {
-                    db.insertGame(currentList.getGames().size() == 0 ? 1 : currentList.getGames().size(), gameName.getText().toString(), price, review, currentList.getId());
                     currentList.getGames().add(new GameModel(currentList.getGames().size() == 0 ? 1 : currentList.getGames().size(), gameName.getText().toString(), price, review, currentList.getId(), null));
+                    db.insertGame(currentList.getGames().size() == 0 ? 1 : currentList.getGames().size(), gameName.getText().toString(), price, review, currentList.getId());
                 }
                 Toast.makeText(this, "Spiel hinzugefügt", Toast.LENGTH_SHORT).show();
                 Intent resultIntent = new Intent();

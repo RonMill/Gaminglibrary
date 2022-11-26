@@ -22,10 +22,13 @@ import android.os.Parcelable;
 import android.text.InputType;
 import android.util.FloatProperty;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ListView;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     private int STORAGE_PERMISSION_CODE = 1;
     private MyAdapter myAdapter;
+    private int index;
 
 
     //TODO: Später bei verlassen der App currentList in sharedPref saven
@@ -91,14 +95,51 @@ public class MainActivity extends AppCompatActivity {
             //addSomeFakeData();
             this.setTitle(allLists.get(0).getName());
             loadGames(currentList.getGames());
+            registerForContextMenu(listView);
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(android.view.ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        MenuInflater mi = getMenuInflater();
+        mi.inflate(R.menu.start_activity_contextmenu, menu);
+
+        index = ((AdapterView.AdapterContextMenuInfo) menuInfo).position;
+        MenuItem edit = menu.findItem(R.id.CONTEXT_EDIT);
+        MenuItem delete = menu.findItem(R.id.CONTEXT_DELETE);
+
+        edit.setTitle(allLists.get(currentList.getId() - 1).getGames().get(index).getName() + " editieren");
+        delete.setTitle(allLists.get(currentList.getId() - 1).getGames().get(index).getName() + " löschen");
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        //TODO: Switch-Case mit den Kontextmenu-Items share und rate implementieren
+        switch (item.getItemId()) {
+            case R.id.CONTEXT_EDIT:
+                Log.d("HSKL", "SHARE");
+                Intent i1 = new Intent(this, InsertGameActivity.class);
+                i1.putExtra("CURRENTLIST", (Parcelable) currentList);
+                i1.putExtra("INDEX", index);
+                setResult(Activity.RESULT_OK, i1);
+                someActivityResultLauncher.launch(i1);
+                return true;
+            case R.id.CONTEXT_DELETE:
+                Log.d("HSKL", "RATE");
+                return true;
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     /**
      * load all games into adapter --> Show all games from the current list on the start page
      */
     public void loadGames(ArrayList<GameModel> arrayList) {
-        myAdapter = new MyAdapter(this,arrayList);
+        myAdapter = new MyAdapter(this, arrayList);
         listView.setAdapter(myAdapter);
     }
 
@@ -300,9 +341,9 @@ public class MainActivity extends AppCompatActivity {
                         int listID = cursor.getInt(cursor.getColumnIndexOrThrow("listeid"));
                         if (cursor.getString(cursor.getColumnIndexOrThrow("imageUri")) != null) {
                             String imageFromPath = cursor.getString(cursor.getColumnIndexOrThrow("imageUri"));
-                            allLists.get(currentList.getId()-1).getGames().add(new GameModel(gameID, gameName, price, rating, listID, imageFromPath));
+                            allLists.get(currentList.getId() - 1).getGames().add(new GameModel(gameID, gameName, price, rating, listID, imageFromPath));
                         } else {
-                            allLists.get(currentList.getId()-1).getGames().add(new GameModel(gameID, gameName, price, rating, listID, null));
+                            allLists.get(currentList.getId() - 1).getGames().add(new GameModel(gameID, gameName, price, rating, listID, null));
                         }
                     }
                 } while (cursor.moveToNext());

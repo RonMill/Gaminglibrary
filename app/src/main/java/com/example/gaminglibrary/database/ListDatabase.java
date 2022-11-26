@@ -5,11 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListDatabase extends SQLiteOpenHelper {
@@ -208,10 +208,16 @@ public class ListDatabase extends SQLiteOpenHelper {
                 db.delete(TABLE_GAME, where, whereArg);
             }
         }
-
     }
 
-    public void changeIDs(List<ListModel> allLists, int deletedID) {
+    public void deleteGame(GameModel game) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = TABLE_GAME_ID + "=?";
+        String[] whereArg = new String[]{Integer.toString(game.getId())};
+        db.delete(TABLE_GAME, where, whereArg);
+    }
+
+    public void changeListIDs(int deletedID) {
         Cursor cursor = selectAllLists();
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -227,6 +233,49 @@ public class ListDatabase extends SQLiteOpenHelper {
             }
         }
         while (cursor.moveToNext());
+    }
+
+    public void changeGameID(int deletedGameID, int listID) {
+        Cursor cursor = selectAllGamesFromList(listID);
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        do {
+            int cursorid = cursor.getInt(cursor.getColumnIndexOrThrow(TABLE_GAME_ID));
+
+            if (cursorid > deletedGameID) {
+                ContentValues values = new ContentValues();
+                values.put(TABLE_GAME_ID, cursorid - 1);
+                String where = TABLE_GAME_ID + "=?";
+                String[] whereArg = new String[]{Integer.toString(cursorid)};
+                db.update(TABLE_GAME, values, where, whereArg);
+            }
+        }
+        while (cursor.moveToNext());
+
+
+    }
+
+    public void updateGame(int gameID, String gameName, Float price, int rating, String uri) {
+        ContentValues neueZeile = new ContentValues();
+        neueZeile.put(TABLE_GAME_NAME, gameName);
+        neueZeile.put(COLUMN_PRICE, price);
+        neueZeile.put(COLUMN_RATING, rating);
+        neueZeile.put(COLUMN_IMAGE_URI, uri);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = TABLE_GAME_ID + "=?";
+        String[] whereArg = new String[]{Integer.toString(gameID)};
+        db.update(TABLE_GAME, neueZeile, where, whereArg);
+    }
+
+    public void updateGame(int gameID, String gameName, Float price, int rating) {
+        ContentValues neueZeile = new ContentValues();
+        neueZeile.put(TABLE_GAME_NAME, gameName);
+        neueZeile.put(COLUMN_PRICE, price);
+        neueZeile.put(COLUMN_RATING, rating);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = TABLE_GAME_ID + "=?";
+        String[] whereArg = new String[]{Integer.toString(gameID)};
+        db.update(TABLE_GAME, neueZeile, where, whereArg);
     }
 
     /*

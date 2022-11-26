@@ -12,15 +12,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.InputType;
-import android.util.FloatProperty;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -40,10 +37,8 @@ import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -77,12 +72,15 @@ public class MainActivity extends AppCompatActivity {
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getResultCode() == 2 || result.getResultCode() == 3) { // 2 = gameInsert; 3 = gameUpdate
                             // There are no request codes
                             Intent data = result.getData();
                             currentList = (ListModel) data.getSerializableExtra("CURRENTLIST");
-                            addGameIntoAllLists();
-                            Log.d("HS_KL", currentList.toString());
+                            if (result.getResultCode() == 3) {
+                                refreshList();
+                            } else {
+                                addGameIntoAllLists();
+                            }
                         }
                     }
                 });
@@ -120,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
         //TODO: Switch-Case mit den Kontextmenu-Items share und rate implementieren
         switch (item.getItemId()) {
             case R.id.CONTEXT_EDIT:
-                Log.d("HSKL", "SHARE");
                 Intent i1 = new Intent(this, InsertGameActivity.class);
                 i1.putExtra("CURRENTLIST", (Parcelable) currentList);
                 i1.putExtra("INDEX", index);
@@ -128,7 +125,13 @@ public class MainActivity extends AppCompatActivity {
                 someActivityResultLauncher.launch(i1);
                 return true;
             case R.id.CONTEXT_DELETE:
-                Log.d("HSKL", "RATE");
+                listDatabase.deleteGame(currentList.getGames().get(index));
+                if (allLists.get(currentList.getId() - 1).getGames().size() > 1) {
+                    listDatabase.changeGameID(currentList.getGames().get(index).getId(), currentList.getId());
+                }
+                refreshList();
+                currentList = allLists.get(currentList.getId() - 1);
+                loadGames(currentList.getGames());
                 return true;
         }
 
@@ -217,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
             if (found) {
                 listModel.setId(listModel.getId() - 1);
                 allLists.remove(foundListModel);
-                listDatabase.changeIDs(allLists, id);
+                listDatabase.changeListIDs(id);
             }
         }
     }
@@ -276,16 +279,16 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.SORT_LETTER:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    ArrayList<GameModel> arrayList = new ArrayList<>(currentList.getGames());
-                    arrayList.sort(Comparator.comparing(GameModel::getName));
-                    loadGames(arrayList);
+                    currentList.getGames().sort(Comparator.comparing(GameModel::getName));
+                    allLists.get(currentList.getId() - 1).getGames().sort(Comparator.comparing(GameModel::getName));
+                    loadGames(currentList.getGames());
                 }
                 return true;
             case R.id.SORT_NUMBER:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    ArrayList<GameModel> arrayList = new ArrayList<>(currentList.getGames());
-                    arrayList.sort(Comparator.comparing(GameModel::getPrice));
-                    loadGames(arrayList);
+                    currentList.getGames().sort(Comparator.comparing(GameModel::getPrice));
+                    allLists.get(currentList.getId() - 1).getGames().sort(Comparator.comparing(GameModel::getPrice));
+                    loadGames(currentList.getGames());
                 }
                 return true;
             case R.id.TAGS:
@@ -348,6 +351,31 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } while (cursor.moveToNext());
             }
+        }
+        loadGames(currentList.getGames());
+    }
+
+    private void refreshList() {
+        allLists.get(currentList.getId() - 1).getGames().clear();
+        Cursor cursor1 = listDatabase.selectAllGamesFromList(currentList.getId());
+        ArrayList<GameModel> gameList = new ArrayList<>();
+        if (cursor1.getCount() > 0) {
+            do {
+                int gameID = cursor1.getInt(cursor1.getColumnIndexOrThrow("_id"));
+                String gameName = cursor1.getString(cursor1.getColumnIndexOrThrow("spielname"));
+                float price = cursor1.getFloat(cursor1.getColumnIndexOrThrow("preis"));
+                int rating = cursor1.getInt(cursor1.getColumnIndexOrThrow("bewertung"));
+                int listID = cursor1.getInt(cursor1.getColumnIndexOrThrow("listeid"));
+                if (cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri")) != null) {
+                    String imageFromPath = cursor1.getString(cursor1.getColumnIndexOrThrow("imageUri"));
+                    gameList.add(new GameModel(gameID, gameName, price, rating, listID, imageFromPath));
+                } else {
+                    gameList.add(new GameModel(gameID, gameName, price, rating, listID, null));
+                }
+
+
+            } while (cursor1.moveToNext());
+            allLists.get(currentList.getId() - 1).setGames(gameList);
         }
         loadGames(currentList.getGames());
     }

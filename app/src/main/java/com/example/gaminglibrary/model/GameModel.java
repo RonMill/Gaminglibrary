@@ -14,6 +14,8 @@ public class GameModel implements Comparable<GameModel>, Parcelable {
     private float price;
     private int rating;
     private int listID;
+
+
     private String imageFromPath;
 
     public GameModel(int id, String name, float price, int rating, int listID, String imageFromPath) {
@@ -95,6 +97,10 @@ public class GameModel implements Comparable<GameModel>, Parcelable {
 
     public String getImageFromPath() {
         return imageFromPath;
+    }
+
+    public void setImageFromPath(String imageFromPath) {
+        this.imageFromPath = imageFromPath;
     }
 
     @NonNull

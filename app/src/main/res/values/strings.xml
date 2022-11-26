@@ -15,4 +15,7 @@
     <string name="insert_game">Spiel hinzufügen</string>
     <string name="open_galery">Bild aus Galerie hinzufügen</string>
     <string name="icon_link">https://icons8.com/icons/set/sort--white</string>
+    <string name="mark_for_delete">Zum Löschen auswählen</string>
+    <string name="save">Speichern</string>
+    <string name="delete_list">Liste löschen</string>
 </resources>

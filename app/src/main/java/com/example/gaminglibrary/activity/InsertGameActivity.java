@@ -142,7 +142,9 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
             //int review = (int) Integer.parseInt(String.valueOf(gameReview.getText()));
             String tmp = String.valueOf(gameReview.getText());
             int indexPoint = tmp.indexOf(".");
+            if(indexPoint != -1){
             tmp = tmp.substring(0, indexPoint);
+            }
             int review = Integer.parseInt(tmp);
             Log.d("HS_KL", String.valueOf(review));
             if (review <= 5 && review >= 1) {

@@ -36,6 +36,7 @@ import com.example.gaminglibrary.R;
 import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -66,14 +67,14 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.MY_LISTVIEW);
         initDB();
         buildAlertBox();
+        this.setTitle("KEINE LISTE AUSGEWAEHLT");
 
         someActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == 2 || result.getResultCode() == 3) { // 2 = gameInsert; 3 = gameUpdate
-                            // There are no request codes
+                        if (result.getResultCode() == 2 || result.getResultCode() == 3) { // 2 = gameInsert; 3 = gameUpdate; 4 = editListActivity
                             Intent data = result.getData();
                             currentList = (ListModel) data.getSerializableExtra("CURRENTLIST");
                             if (result.getResultCode() == 3) {
@@ -81,6 +82,19 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 addGameIntoAllLists();
                             }
+                        } else if (result.getResultCode() == 4) {
+                            Intent data = result.getData();
+                            refreshAllLists();
+                            if (allLists.size() > 0) {
+                                currentList = allLists.get(0);
+                                MainActivity.this.setTitle(currentList.getName());
+                                loadGames(currentList.getGames());
+                            } else {
+                                MainActivity.this.setTitle("KEINE LISTE AUSGEWAEHLT");
+                                loadGames(new ArrayList<GameModel>());
+                                dialog.show();
+                            }
+                            updateSubMenu();
                         }
                     }
                 });
@@ -187,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
                 input.setText("");
                 updateSubMenu();
                 currentList = allLists.get(allLists.size() - 1);
+                loadGames(currentList.getGames());
                 MainActivity.this.setTitle(currentList.getName());
             }
         });
@@ -204,27 +219,6 @@ public class MainActivity extends AppCompatActivity {
         myToast.show(); // show info toast for the user
     }
 
-    /**
-     * Delete a list
-     *
-     * @param id ID from list
-     */
-    private void deleteListByID(int id) {
-        boolean found = false;
-        ListModel foundListModel = null;
-        for (ListModel listModel : allLists) {
-            if (listModel.getId() == id) {
-                listDatabase.deleteList(listModel, allLists);
-                foundListModel = listModel;
-                found = true;
-            }
-            if (found) {
-                listModel.setId(listModel.getId() - 1);
-                allLists.remove(foundListModel);
-                listDatabase.changeListIDs(id);
-            }
-        }
-    }
 
     private void addSomeFakeData() {
         /*listenDatenbank.insertListe(1, "testliste");
@@ -277,6 +271,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.EDIT:
+                if (allLists.size() > 0 && currentList != null) {
+                    Intent i2 = new Intent(this, EditListActivity.class);
+                    i2.putExtra("CURRENTLIST", (Parcelable) currentList);
+                    i2.putExtra("ALLLISTSIZE", allLists.size());
+                    setResult(Activity.RESULT_OK, i2);
+                    someActivityResultLauncher.launch(i2);
+                } else {
+                    showToast("Es existiert keine Liste");
+                }
                 return true;
             case R.id.SORT_LETTER:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -414,9 +417,6 @@ public class MainActivity extends AppCompatActivity {
                     allLists.add(new ListModel(listeid, titel, gameList));
                 } while (cursor.moveToNext());
             }
-        }
-        if(allLists.size() > 0){
-            currentList = allLists.get(currentList.getId() - 1);
         }
     }
 }

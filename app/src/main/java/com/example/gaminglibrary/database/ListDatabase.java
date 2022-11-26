@@ -181,7 +181,7 @@ public class ListDatabase extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public void deleteList(ListModel listModel, List<ListModel> allLists) {
+    public void deleteSelectedList(ListModel listModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         String where = COLUMN_LIST_ID + "=?";
         String[] whereArg = new String[]{Integer.toString(listModel.getId())};
@@ -189,14 +189,13 @@ public class ListDatabase extends SQLiteOpenHelper {
         //allLists.remove(listModel);
     }
 
-    public void deleteList(List<ListModel> allLists) {
+    public void deleteAllLists(List<ListModel> allLists) {
         for (ListModel listModel : allLists) {
             SQLiteDatabase db = this.getWritableDatabase();
             String where = COLUMN_LIST_ID + "=?";
             String[] whereArg = new String[]{Integer.toString(listModel.getId())};
             db.delete(TABLE_LIST, where, whereArg);
         }
-
     }
 
     public void deleteAllGames(List<ListModel> allLists) {
@@ -207,6 +206,16 @@ public class ListDatabase extends SQLiteOpenHelper {
                 String[] whereArg = new String[]{Integer.toString(gameModel.getId())};
                 db.delete(TABLE_GAME, where, whereArg);
             }
+        }
+    }
+
+    public void deleteAllGamesFromCurrentList(ListModel currentlist) {
+        for (GameModel gameModel : currentlist.getGames()) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String where = TABLE_GAME_ID + "=?";
+            String[] whereArg = new String[]{Integer.toString(gameModel.getId())};
+            db.delete(TABLE_GAME, where, whereArg);
+
         }
     }
 
@@ -251,8 +260,6 @@ public class ListDatabase extends SQLiteOpenHelper {
             }
         }
         while (cursor.moveToNext());
-
-
     }
 
     public void updateGame(int gameID, String gameName, Float price, int rating, String uri) {

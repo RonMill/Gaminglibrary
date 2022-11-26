@@ -187,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 input.setText("");
                 updateSubMenu();
                 currentList = allLists.get(allLists.size() - 1);
+                MainActivity.this.setTitle(currentList.getName());
             }
         });
         //this.setTitle(allLists.get(allLists.size() - 1).getName());
@@ -353,6 +354,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         loadGames(currentList.getGames());
+        currentList = allLists.get(currentList.getId() - 1);
     }
 
     private void refreshList() {
@@ -378,6 +380,7 @@ public class MainActivity extends AppCompatActivity {
             allLists.get(currentList.getId() - 1).setGames(gameList);
         }
         loadGames(currentList.getGames());
+        currentList = allLists.get(currentList.getId() - 1);
     }
 
     @SuppressLint("Range")
@@ -411,6 +414,9 @@ public class MainActivity extends AppCompatActivity {
                     allLists.add(new ListModel(listeid, titel, gameList));
                 } while (cursor.moveToNext());
             }
+        }
+        if(allLists.size() > 0){
+            currentList = allLists.get(currentList.getId() - 1);
         }
     }
 }

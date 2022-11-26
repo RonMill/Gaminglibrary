@@ -139,7 +139,12 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View view) {
         if (view.getId() == addGame.getId() && index == -1) { // check which button got pressed
-            int review = (int) Integer.parseInt(String.valueOf(gameReview.getText()));
+            //int review = (int) Integer.parseInt(String.valueOf(gameReview.getText()));
+            String tmp = String.valueOf(gameReview.getText());
+            int indexPoint = tmp.indexOf(".");
+            tmp = tmp.substring(0, indexPoint);
+            int review = Integer.parseInt(tmp);
+            Log.d("HS_KL", String.valueOf(review));
             if (review <= 5 && review >= 1) {
                 Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
                 if (imageFilePath != null) { // if user select a picture
@@ -159,11 +164,17 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
                 Toast.makeText(this, "Deine Bewertung ist zu hoch! (Range von 1-5)", Toast.LENGTH_SHORT).show();
             }
         } else if (view.getId() == addGame.getId() && index != -1) {
-            int review = (int) Integer.parseInt(String.valueOf(gameReview.getText()));
+            //int review = (int) Integer.parseInt(String.valueOf(gameReview.getText()));
+            String tmp = String.valueOf(gameReview.getText());
+            int indexPoint = tmp.indexOf(".");
+            tmp = tmp.substring(0, indexPoint);
+            int review = Integer.parseInt(tmp);
+            Log.d("HS_KL", String.valueOf(review));
+
             if (review <= 5 && review >= 1) {
                 Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
                 currentList.getGames().get(index).setName(gameName.getText().toString());
-                currentList.getGames().get(index).setRating(Integer.parseInt(gameReview.getText().toString()));
+                currentList.getGames().get(index).setRating(review);
                 currentList.getGames().get(index).setPrice(Float.parseFloat(gamePrice.getText().toString()));
                 if (imageFilePath != null) { // if user select a picture
                     currentList.getGames().get(index).setImageFromPath(filePath);

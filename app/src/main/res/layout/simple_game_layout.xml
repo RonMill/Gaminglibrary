@@ -6,10 +6,11 @@
     android:padding="10dp">
 
     <ImageView
-        android:id="@+id/MY_PERSON_PICTURE"
+        android:id="@+id/MY_GAME_PICTURE"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:src="@android:drawable/ic_menu_gallery"/>
+        android:src="@android:drawable/ic_menu_gallery" />
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -19,7 +20,7 @@
         android:paddingLeft="10dp">
 
         <TextView
-            android:id="@+id/MY_PERSON_NAME"
+            android:id="@+id/MY_GAME_NAME"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:textSize="20sp"
@@ -39,9 +40,11 @@
                 android:layout_height="wrap_content"
                 android:columnCount="2"
                 android:rowCount="1">
+
                 <TableRow>
+
                     <TextView
-                        android:id="@+id/MY_PERSON_ADRESS"
+                        android:id="@+id/MY_GAME_PRICE"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_columnSpan="1"
@@ -51,12 +54,12 @@
                 <TableRow>
 
                     <TextView
-                        android:id="@+id/MY_RATING"
+                        android:id="@+id/MY_GAME_RATING"
                         android:layout_width="75dp"
                         android:layout_height="wrap_content"
                         android:layout_columnSpan="1"
-                        android:textSize="14sp"
-                        android:inputType="numberSigned"/>
+                        android:inputType="numberSigned"
+                        android:textSize="14sp" />
 
                 </TableRow>
 
@@ -65,3 +68,4 @@
         </GridLayout>
     </LinearLayout>
 </LinearLayout>
+

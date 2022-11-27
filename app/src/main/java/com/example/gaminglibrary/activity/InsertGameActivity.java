@@ -143,7 +143,7 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
             String tmp = String.valueOf(gameReview.getText());
             int indexPoint = tmp.indexOf(".");
             if(indexPoint != -1){
-            tmp = tmp.substring(0, indexPoint);
+                tmp = tmp.substring(0, indexPoint);
             }
             int review = Integer.parseInt(tmp);
             Log.d("HS_KL", String.valueOf(review));
@@ -169,10 +169,10 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
             //int review = (int) Integer.parseInt(String.valueOf(gameReview.getText()));
             String tmp = String.valueOf(gameReview.getText());
             int indexPoint = tmp.indexOf(".");
-            tmp = tmp.substring(0, indexPoint);
+            if(indexPoint != -1){
+                tmp = tmp.substring(0, indexPoint);
+            }
             int review = Integer.parseInt(tmp);
-            Log.d("HS_KL", String.valueOf(review));
-
             if (review <= 5 && review >= 1) {
                 Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
                 currentList.getGames().get(index).setName(gameName.getText().toString());

@@ -1,5 +1,6 @@
 package com.example.gaminglibrary.activity;
 
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +25,7 @@ import com.example.gaminglibrary.database.ListDatabase;
 import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EditListActivity extends AppCompatActivity implements View.OnClickListener {
@@ -34,6 +38,7 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
     ListDatabase listDatabase;
     ListModel currentList;
     private int allListSize;
+    private ArrayList<Integer> allBoxIDs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +70,22 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
         for (GameModel gameModel : currentList.getGames()) {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(gameModel.getName());
+            checkBox.setId(gameModel.getId());
             checkBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //is chkIos checked?
+                    if (((CheckBox) v).isChecked()) {
+                        if (!allBoxIDs.contains(v.getId())) {
+                            allBoxIDs.add(v.getId());
+                        }
+                    } else {
+                        allBoxIDs.remove(allBoxIDs.indexOf(v.getId()));
+                    }
+                    Log.d("HS_KL", allBoxIDs.toString());
+                }
+            });
             linearLayout.addView(checkBox);
         }
     }
@@ -75,6 +95,19 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
         if (view.getId() == delete.getId()) {
             buildDeleteDialog();
             alertDialog.show();
+        } else if (view.getId() == save.getId()) {
+            listDatabase.deleteSelectedGames(allBoxIDs, currentList.getId());
+            Intent resultIntent = new Intent();
+            if (currentList.getGames().size() > allBoxIDs.size()) {
+                for (int i : allBoxIDs) {
+                    listDatabase.changeGameID(i, currentList.getId());
+                }
+                setResult(5, resultIntent);
+            } else {
+                setResult(6, resultIntent);
+            }
+            EditListActivity.this.finish();
+            return;
         }
     }
 
@@ -86,6 +119,7 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
         builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+
             }
         });
         builder.setPositiveButton("Löschen", new DialogInterface.OnClickListener() {

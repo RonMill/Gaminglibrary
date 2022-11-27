@@ -209,6 +209,15 @@ public class ListDatabase extends SQLiteOpenHelper {
         }
     }
 
+    public void deleteSelectedGames(List<Integer> gameIDs, int listid) {
+        for (int id : gameIDs) {
+                SQLiteDatabase db = this.getWritableDatabase();
+                //String where = TABLE_GAME_ID + "=?";
+                //String[] whereArg = new String[]{Integer.toString(id)};
+                db.delete(TABLE_GAME, TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?", new String[]{String.valueOf(id), String.valueOf(listid)});
+        }
+    }
+
     public void deleteAllGamesFromCurrentList(ListModel currentlist) {
         for (GameModel gameModel : currentlist.getGames()) {
             SQLiteDatabase db = this.getWritableDatabase();

@@ -74,8 +74,9 @@ public class MainActivity extends AppCompatActivity {
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == 2 || result.getResultCode() == 3) { // 2 = gameInsert; 3 = gameUpdate; 4 = editListActivity
-                            Intent data = result.getData();
+                        Intent data = result.getData();
+                        // 2 = gameInsert; 3 = gameUpdate; 4 = editListActivity; 5 = deletedGames and update game id; 6 = deleted every game
+                        if (result.getResultCode() == 2 || result.getResultCode() == 3) {
                             currentList = (ListModel) data.getSerializableExtra("CURRENTLIST");
                             if (result.getResultCode() == 3) {
                                 refreshList();
@@ -83,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
                                 addGameIntoAllLists();
                             }
                         } else if (result.getResultCode() == 4) {
-                            Intent data = result.getData();
                             refreshAllLists();
                             if (allLists.size() > 0) {
                                 currentList = allLists.get(0);
@@ -95,6 +95,14 @@ public class MainActivity extends AppCompatActivity {
                                 dialog.show();
                             }
                             updateSubMenu();
+                        } else if (result.getResultCode() == 5 || result.getResultCode() == 6) {
+                            if (result.getResultCode() == 5) {
+                                refreshList();
+                            } else {
+                                allLists.get(currentList.getId() - 1).getGames().clear();
+                                currentList.getGames().clear();
+                                loadGames(currentList.getGames());
+                            }
                         }
                     }
                 });
@@ -360,6 +368,9 @@ public class MainActivity extends AppCompatActivity {
         currentList = allLists.get(currentList.getId() - 1);
     }
 
+    /**
+     * Load allgames new in allLists and set currentList new
+     */
     private void refreshList() {
         allLists.get(currentList.getId() - 1).getGames().clear();
         Cursor cursor1 = listDatabase.selectAllGamesFromList(currentList.getId());

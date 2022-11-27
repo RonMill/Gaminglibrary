@@ -180,9 +180,9 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
                 currentList.getGames().get(index).setPrice(Float.parseFloat(gamePrice.getText().toString()));
                 if (imageFilePath != null) { // if user select a picture
                     currentList.getGames().get(index).setImageFromPath(filePath);
-                    db.updateGame(currentList.getGames().get(index).getId(), gameName.getText().toString(), price, review, filePath);
+                    db.updateGame(currentList.getGames().get(index).getId(), gameName.getText().toString(), price, review, filePath, currentList.getId());
                 } else {
-                    db.updateGame(currentList.getGames().get(index).getId(), gameName.getText().toString(), price, review);
+                    db.updateGame(currentList.getGames().get(index).getId(), gameName.getText().toString(), price, review, currentList.getId());
                 }
                 Toast.makeText(this, "Spiel gespeichert", Toast.LENGTH_SHORT).show();
                 Intent resultIntent = new Intent();

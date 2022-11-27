@@ -211,10 +211,10 @@ public class ListDatabase extends SQLiteOpenHelper {
 
     public void deleteSelectedGames(List<Integer> gameIDs, int listid) {
         for (int id : gameIDs) {
-                SQLiteDatabase db = this.getWritableDatabase();
-                //String where = TABLE_GAME_ID + "=?";
-                //String[] whereArg = new String[]{Integer.toString(id)};
-                db.delete(TABLE_GAME, TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?", new String[]{String.valueOf(id), String.valueOf(listid)});
+            SQLiteDatabase db = this.getWritableDatabase();
+            String where = TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?";
+            String[] whereArg = new String[]{String.valueOf(id), String.valueOf(listid)};
+            db.delete(TABLE_GAME, where, whereArg);
         }
     }
 
@@ -230,9 +230,10 @@ public class ListDatabase extends SQLiteOpenHelper {
 
     public void deleteGame(GameModel game) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String where = TABLE_GAME_ID + "=?";
-        String[] whereArg = new String[]{Integer.toString(game.getId())};
+        String where = TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?";
+        String[] whereArg = new String[]{String.valueOf(game.getId()), String.valueOf(game.getListID())};
         db.delete(TABLE_GAME, where, whereArg);
+
     }
 
     public void changeListIDs(int deletedID) {
@@ -248,7 +249,25 @@ public class ListDatabase extends SQLiteOpenHelper {
                 String where = COLUMN_LIST_ID + "=?";
                 String[] whereArg = new String[]{Integer.toString(cursorid)};
                 db.update(TABLE_LIST, values, where, whereArg);
+                changeListIDInsideGamesTable(cursorid - 1);
             }
+        }
+        while (cursor.moveToNext());
+    }
+
+    public void changeListIDInsideGamesTable(int listID) {
+        Cursor cursor = selectAllGamesFromList(listID + 1);
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        do {
+            int cursorGameID = cursor.getInt(cursor.getColumnIndexOrThrow(TABLE_GAME_ID));
+
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_LIST_ID, listID);
+            String where = TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?";
+            String[] whereArg = new String[]{Integer.toString(cursorGameID), Integer.toString(listID + 1)};
+            db.update(TABLE_GAME, values, where, whereArg);
+
         }
         while (cursor.moveToNext());
     }
@@ -271,26 +290,26 @@ public class ListDatabase extends SQLiteOpenHelper {
         while (cursor.moveToNext());
     }
 
-    public void updateGame(int gameID, String gameName, Float price, int rating, String uri) {
+    public void updateGame(int gameID, String gameName, Float price, int rating, String uri, int listid) {
         ContentValues neueZeile = new ContentValues();
         neueZeile.put(TABLE_GAME_NAME, gameName);
         neueZeile.put(COLUMN_PRICE, price);
         neueZeile.put(COLUMN_RATING, rating);
         neueZeile.put(COLUMN_IMAGE_URI, uri);
         SQLiteDatabase db = this.getWritableDatabase();
-        String where = TABLE_GAME_ID + "=?";
-        String[] whereArg = new String[]{Integer.toString(gameID)};
+        String where = TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?";
+        String[] whereArg = new String[]{Integer.toString(gameID), Integer.toString(listid)};
         db.update(TABLE_GAME, neueZeile, where, whereArg);
     }
 
-    public void updateGame(int gameID, String gameName, Float price, int rating) {
+    public void updateGame(int gameID, String gameName, Float price, int rating, int listid) {
         ContentValues neueZeile = new ContentValues();
         neueZeile.put(TABLE_GAME_NAME, gameName);
         neueZeile.put(COLUMN_PRICE, price);
         neueZeile.put(COLUMN_RATING, rating);
         SQLiteDatabase db = this.getWritableDatabase();
-        String where = TABLE_GAME_ID + "=?";
-        String[] whereArg = new String[]{Integer.toString(gameID)};
+        String where = TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?";
+        String[] whereArg = new String[]{Integer.toString(gameID), Integer.toString(listid)};
         db.update(TABLE_GAME, neueZeile, where, whereArg);
     }
 

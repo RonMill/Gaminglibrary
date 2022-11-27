@@ -128,11 +128,11 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
                 Log.d("HS_KL", currentList.toString());
 
                 listDatabase.deleteSelectedList(currentList);
+                listDatabase.deleteAllGamesFromCurrentList(currentList);
                 allListSize = allListSize - 1;
                 if (allListSize > 0) {
                     listDatabase.changeListIDs(currentList.getId());
                 }
-                listDatabase.deleteAllGamesFromCurrentList(currentList);
                 Toast.makeText(EditListActivity.this, "Liste wurde erfolgreich gelöscht", Toast.LENGTH_SHORT).show();
                 Intent resultIntent = new Intent();
                 setResult(4, resultIntent);

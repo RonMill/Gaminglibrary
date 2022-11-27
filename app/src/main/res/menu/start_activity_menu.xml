@@ -32,37 +32,18 @@
         android:id="@+id/SORT_LETTER"
         android:icon="@drawable/icon_sort_letter_white"
         app:showAsAction="always"
-        android:title="TODO" />
+        android:title="Sort Letter" />
 
     <item
         android:id="@+id/SORT_NUMBER"
         android:icon="@drawable/icon_sort_number_white"
         app:showAsAction="always"
-        android:title="TODO" />
+        android:title="Sort Number" />
 
-    <item
-        android:id="@+id/TAGS"
-        android:title="@string/tags"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/STATISTIC"
-        android:title="@string/statistic"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/SETTINGS"
-        android:title="@string/option"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/IMPORT"
-        android:title="@string/import_list"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/EXPORT"
-        android:title="@string/export"
-        app:showAsAction="never" />
     <item
         android:id="@+id/INSERT_GAME"
         android:title="@string/insert_game"
-        app:showAsAction="never" />
+        app:showAsAction="always"
+        android:icon="@drawable/ic_add_white_48dp"/>
 
 </menu>

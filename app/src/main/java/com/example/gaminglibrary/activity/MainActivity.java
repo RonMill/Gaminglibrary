@@ -303,16 +303,6 @@ public class MainActivity extends AppCompatActivity {
                     loadGames(currentList.getGames());
                 }
                 return true;
-            case R.id.TAGS:
-                return true;
-            case R.id.STATISTIC:
-                return true;
-            case R.id.SETTINGS:
-                return true;
-            case R.id.IMPORT:
-                return true;
-            case R.id.EXPORT:
-                return true;
             case R.id.INSERT_GAME:
                 if (allLists.size() > 0) {
                     Intent i1 = new Intent(this, InsertGameActivity.class);

@@ -168,6 +168,13 @@ public class ListDatabase extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor selectListFromID(int listid) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_LIST + " WHERE " + COLUMN_LIST_ID + " = " + listid , null);
+        cursor.moveToFirst();
+        return cursor;
+    }
+
     public Cursor selectTagsFromGame(int id) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_TAG + " WHERE " + COLUMN_GAMES + " = " + id, null);
@@ -315,6 +322,15 @@ public class ListDatabase extends SQLiteOpenHelper {
         String where = TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?";
         String[] whereArg = new String[]{Integer.toString(gameID), Integer.toString(listid)};
         db.update(TABLE_GAME, neueZeile, where, whereArg);
+    }
+
+    public void updateListName(int listID, String newListName) {
+        ContentValues neueZeile = new ContentValues();
+        neueZeile.put(COLUMN_NAME, newListName);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = COLUMN_LIST_ID + "=?";
+        String[] whereArg = new String[]{Integer.toString(listID)};
+        db.update(TABLE_LIST, neueZeile, where, whereArg);
     }
 
     /*

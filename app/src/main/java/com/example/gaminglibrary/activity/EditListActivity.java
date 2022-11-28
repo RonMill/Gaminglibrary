@@ -97,22 +97,24 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
             alertDialog.show();
         } else if (view.getId() == save.getId()) {
             String newListName = editText.getText().toString();
-            listDatabase.deleteSelectedGames(allBoxIDs, currentList.getId());
             boolean insideIf = false;
             Intent resultIntent = new Intent();
+            // check if the user changes the list name
             if (!currentList.getName().equals(newListName)) {
                 listDatabase.updateListName(currentList.getId(), newListName);
                 insideIf = true;
             }
-            if (currentList.getGames().size() > allBoxIDs.size()) {
+            // check if the user wanna delete some games
+            if (allBoxIDs.size() > 0) {
+                listDatabase.deleteSelectedGames(allBoxIDs, currentList.getId());
                 for (int i : allBoxIDs) {
                     listDatabase.changeGameID(i, currentList.getId());
                 }
                 insideIf = true;
             }
-            if(insideIf){
+            if (insideIf) {
                 setResult(5, resultIntent);
-            } else{
+            } else {
                 setResult(6, resultIntent);
             }
             EditListActivity.this.finish();

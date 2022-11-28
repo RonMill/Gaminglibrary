@@ -229,8 +229,8 @@ public class ListDatabase extends SQLiteOpenHelper {
     public void deleteAllGamesFromCurrentList(ListModel currentlist) {
         for (GameModel gameModel : currentlist.getGames()) {
             SQLiteDatabase db = this.getWritableDatabase();
-            String where = TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?";
-            String[] whereArg = new String[]{Integer.toString(gameModel.getId()), Integer.toString(currentlist.getId())};
+            String where = COLUMN_LIST_ID + "=?";
+            String[] whereArg = new String[]{Integer.toString(currentlist.getId())};
             db.delete(TABLE_GAME, where, whereArg);
 
         }
@@ -270,12 +270,10 @@ public class ListDatabase extends SQLiteOpenHelper {
         do {
             int cursorGameID = cursor.getInt(cursor.getColumnIndexOrThrow(TABLE_GAME_ID));
             int cursorlistID = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_LIST_ID));
-            Log.d("HS_KL", "GAMEID " + Integer.toString(cursorGameID));
-            Log.d("HS_KL", "listid: " + Integer.toString(cursorlistID));
 
             ContentValues values = new ContentValues();
             values.put(COLUMN_LIST_ID, listID);
-            String where = /*TABLE_GAME_ID + "=? AND" + */COLUMN_LIST_ID + "=?"; // Attribut game id unnötig, da alle Spiele der listid ausgewählt wurden und geupdated werden
+            String where = COLUMN_LIST_ID + "=?"; // Attribut game id unnötig, da alle Spiele der listid ausgewählt wurden und geupdated werden
             String[] whereArg = new String[]{Integer.toString(listID + 1)};
             db.update(TABLE_GAME, values, where, whereArg);
 

@@ -272,7 +272,7 @@ public class ListDatabase extends SQLiteOpenHelper {
 
             ContentValues values = new ContentValues();
             values.put(COLUMN_LIST_ID, listID);
-            String where = /*TABLE_GAME_ID + "=? AND" + */COLUMN_LIST_ID + "=?"; // Attribut game id unnötig, da alle Spiele der listid ausgewählt wurden und geupdated werden
+            String where = COLUMN_LIST_ID + "=?"; // Attribut game id unnötig, da alle Spiele der listid ausgewählt wurden und geupdated werden
             String[] whereArg = new String[]{Integer.toString(listID + 1)};
             db.update(TABLE_GAME, values, where, whereArg);
 

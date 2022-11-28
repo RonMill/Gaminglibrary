@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         Intent data = result.getData();
-                        // 2 = gameInsert; 3 = gameUpdate; 4 = editListActivity; 5 = deletedGames or updated name --> Update everything from currentlist; 6 = deleted every game
+                        // 2 = gameInsert; 3 = gameUpdate; 4 = editListActivity; 5 = deleted any games or updated name --> Update everything from currentlist; 6 = deleted every game
                         if (result.getResultCode() == 2 || result.getResultCode() == 3) {
                             currentList = (ListModel) data.getSerializableExtra("CURRENTLIST");
                             if (result.getResultCode() == 3) {
@@ -377,13 +377,12 @@ public class MainActivity extends AppCompatActivity {
     private void refreshList() {
         allLists.get(currentList.getId() - 1).getGames().clear();
         Cursor cursor1 = listDatabase.selectAllGamesFromList(currentList.getId());
-        // TODO: Namen der aktuellen Liste aus der DB lesen
+
         Cursor cursor2 = listDatabase.selectListFromID(currentList.getId());
         if (cursor2.getCount() > 0) {
-            Log.d("HS_KL", cursor2.getString(cursor2.getColumnIndexOrThrow("titel")));
             allLists.get(currentList.getId() - 1).setName(cursor2.getString(cursor2.getColumnIndexOrThrow("titel")));
         }
-        //allLists.get(currentList.getId() - 1).setName(cursor2.getString(cursor2.getColumnIndexOrThrow("titel")));
+
         ArrayList<GameModel> gameList = new ArrayList<>();
         if (cursor1.getCount() > 0) {
             do {

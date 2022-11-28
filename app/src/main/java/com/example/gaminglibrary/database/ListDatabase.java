@@ -228,8 +228,8 @@ public class ListDatabase extends SQLiteOpenHelper {
     public void deleteAllGamesFromCurrentList(ListModel currentlist) {
         for (GameModel gameModel : currentlist.getGames()) {
             SQLiteDatabase db = this.getWritableDatabase();
-            String where = TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?";
-            String[] whereArg = new String[]{Integer.toString(gameModel.getId()), Integer.toString(currentlist.getId())};
+            String where = COLUMN_LIST_ID + "=?";
+            String[] whereArg = new String[]{Integer.toString(currentlist.getId())};
             db.delete(TABLE_GAME, where, whereArg);
 
         }

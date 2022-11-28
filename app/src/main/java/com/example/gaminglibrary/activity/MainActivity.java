@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
 
         listView = (ListView) findViewById(R.id.MY_LISTVIEW);
+        registerForContextMenu(listView);
         initDB();
         buildAlertBox();
         this.setTitle("KEINE LISTE AUSGEWAEHLT");
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         Intent data = result.getData();
-                        // 2 = gameInsert; 3 = gameUpdate; 4 = editListActivity; 5 = deletedGames and update game id; 6 = deleted every game
+                        // 2 = gameInsert; 3 = gameUpdate; 4 = editListActivity; 5 = deletedGames or updated name --> Update everything from currentlist; 6 = deleted every game
                         if (result.getResultCode() == 2 || result.getResultCode() == 3) {
                             currentList = (ListModel) data.getSerializableExtra("CURRENTLIST");
                             if (result.getResultCode() == 3) {
@@ -98,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
                         } else if (result.getResultCode() == 5 || result.getResultCode() == 6) {
                             if (result.getResultCode() == 5) {
                                 refreshList();
+                                MainActivity.this.setTitle(currentList.getName());
+                                updateSubMenu();
                             } else {
                                 allLists.get(currentList.getId() - 1).getGames().clear();
                                 currentList.getGames().clear();
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+
         if (allLists.isEmpty()) {
             showToast("Keine Liste gefunden!");
             dialog.show();
@@ -115,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
             //addSomeFakeData();
             this.setTitle(allLists.get(0).getName());
             loadGames(currentList.getGames());
-            registerForContextMenu(listView);
         }
     }
 
@@ -374,6 +377,13 @@ public class MainActivity extends AppCompatActivity {
     private void refreshList() {
         allLists.get(currentList.getId() - 1).getGames().clear();
         Cursor cursor1 = listDatabase.selectAllGamesFromList(currentList.getId());
+        // TODO: Namen der aktuellen Liste aus der DB lesen
+        Cursor cursor2 = listDatabase.selectListFromID(currentList.getId());
+        if (cursor2.getCount() > 0) {
+            Log.d("HS_KL", cursor2.getString(cursor2.getColumnIndexOrThrow("titel")));
+            allLists.get(currentList.getId() - 1).setName(cursor2.getString(cursor2.getColumnIndexOrThrow("titel")));
+        }
+        //allLists.get(currentList.getId() - 1).setName(cursor2.getString(cursor2.getColumnIndexOrThrow("titel")));
         ArrayList<GameModel> gameList = new ArrayList<>();
         if (cursor1.getCount() > 0) {
             do {
@@ -393,8 +403,8 @@ public class MainActivity extends AppCompatActivity {
             } while (cursor1.moveToNext());
             allLists.get(currentList.getId() - 1).setGames(gameList);
         }
-        loadGames(currentList.getGames());
         currentList = allLists.get(currentList.getId() - 1);
+        loadGames(currentList.getGames());
     }
 
     @SuppressLint("Range")

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
@@ -270,8 +269,6 @@ public class ListDatabase extends SQLiteOpenHelper {
         do {
             int cursorGameID = cursor.getInt(cursor.getColumnIndexOrThrow(TABLE_GAME_ID));
             int cursorlistID = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_LIST_ID));
-            Log.d("HS_KL", "GAMEID " + Integer.toString(cursorGameID));
-            Log.d("HS_KL", "listid: " + Integer.toString(cursorlistID));
 
             ContentValues values = new ContentValues();
             values.put(COLUMN_LIST_ID, listID);

@@ -41,7 +41,7 @@
         android:title="TODO" />
 
     <item
-        android:id="@+id/TAGS"
+        android:id="@+id/WEATHER"
         android:title="@string/tags"
         app:showAsAction="never" />
     <item

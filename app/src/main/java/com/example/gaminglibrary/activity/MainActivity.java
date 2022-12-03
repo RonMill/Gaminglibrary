@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public SubMenu subMenu;
     ActivityResultLauncher<Intent> someActivityResultLauncher;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -303,7 +304,9 @@ public class MainActivity extends AppCompatActivity {
                     loadGames(currentList.getGames());
                 }
                 return true;
-            case R.id.TAGS:
+            case R.id.WEATHER:
+                Intent i = new Intent(this, WeatherActivity.class);
+                startActivity(i);
                 return true;
             case R.id.STATISTIC:
                 return true;

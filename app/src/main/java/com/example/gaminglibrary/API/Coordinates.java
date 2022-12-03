@@ -5,7 +5,11 @@ public class Coordinates {
     private String lon;
     private String lat;
 
-    public Coordinates(String lon, String lat){
+    public Coordinates() {
+
+    }
+
+    public Coordinates(String lon, String lat) {
         this.lon = lon;
         this.lat = lat;
     }
@@ -16,6 +20,14 @@ public class Coordinates {
 
     public void setLon(String lon) {
         this.lon = lon;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
     }
 
     @Override

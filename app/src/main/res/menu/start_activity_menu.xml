@@ -42,7 +42,7 @@
 
     <item
         android:id="@+id/WEATHER"
-        android:title="@string/tags"
+        android:title="@string/weather"
         app:showAsAction="never" />
     <item
         android:id="@+id/STATISTIC"

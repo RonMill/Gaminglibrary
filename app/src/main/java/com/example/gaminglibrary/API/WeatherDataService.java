@@ -2,14 +2,12 @@ package com.example.gaminglibrary.API;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.gaminglibrary.activity.WeatherActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,12 +28,12 @@ public class WeatherDataService {
         this.context = context;
     }
 
-    public interface VolleyResponseListener{
+    public interface VolleyResponseListenerForCoordinates {
         void onError(String message);
         void onResponse(Coordinates coordinates);
     }
 
-    public void getCoordinates(String cityName, VolleyResponseListener volleyResponseListener){
+    public void getCoordinates(String cityName, VolleyResponseListenerForCoordinates volleyResponseListenerForCoordinates){
         String url = QUERY_FOR_COORDINATES + cityName+","+COUNTRY_CODE+"&appid="+APIKEY;
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
@@ -47,10 +45,10 @@ public class WeatherDataService {
                     coordinates.setLon(coord.getString("lon"));
                     coordinates.setLat(coord.getString("lat"));
                     //Toast.makeText(context,coordinates.toString(),Toast.LENGTH_SHORT).show();
-                    volleyResponseListener.onResponse(coordinates);
+                    volleyResponseListenerForCoordinates.onResponse(coordinates);
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    volleyResponseListener.onError("Nope");
+                    volleyResponseListenerForCoordinates.onError("something went wrong to get the coordinates");
                 }
             }
         }, new Response.ErrorListener() {
@@ -61,7 +59,13 @@ public class WeatherDataService {
         });
         MySingleton.getInstance(context).addToRequestQueue(request);
     }
-    public void getWeatherReportByLonLat(){
+
+    public interface VolleyResponseListenerForWeaterReport {
+        void onError(String message);
+        void onResponse(WeatherReportModel weatherReportModel);
+    }
+
+    public void getWeatherReportByLonLat(VolleyResponseListenerForWeaterReport volleyResponseListenerForWeaterReport){
        String url = QUERY_FOR_WEATHER + coordinates.getLat().toString()+"&lon="+coordinates.getLon().toString()+"&appid="+APIKEY+UNITS;
         WeatherReportModel weatherReportModel = new WeatherReportModel();
 
@@ -74,8 +78,10 @@ public class WeatherDataService {
                     JSONObject tempData = response.getJSONObject("main");
                     weatherReportModel.setDescription(weatherData.getJSONObject(0).getString("description"));
                     weatherReportModel.setTemperature(new Temperature(tempData.getString("temp"),tempData.getString("feels_like"),tempData.getString("temp_min"),tempData.getString("temp_max")));
+                    volleyResponseListenerForWeaterReport.onResponse(weatherReportModel);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    volleyResponseListenerForWeaterReport.onError("something went wrong to get the Weather Report");
                 }
             }
 
@@ -86,16 +92,5 @@ public class WeatherDataService {
             }
         });
         MySingleton.getInstance(context).addToRequestQueue(request);
-
     }
-
-    //String urlForWeather = "https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid=ff76494d7fec7ca86a761ecc9dd6b12a";
-
-/*    public List<WeatherReportModel> getCityForecastById(String cityID) {
-
-    }
-
-    public List<WeatherReportModel> getCitxyForcastByID(String cityID) {
-
-    }*/
 }

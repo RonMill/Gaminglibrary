@@ -43,6 +43,7 @@ public class WeatherActivity extends AppCompatActivity {
         btn_getWeather = (Button) findViewById(R.id.GET_WEATHERBUTTON);
         et_dataInput = (EditText) findViewById(R.id.EDITTEXTLOCATION);
         lv_WeatherReport = (ListView) findViewById(R.id.WeatherReport);
+        et_dataInput.setText("meisenheim");
 
 
         btn_getWeather.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +58,7 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Coordinates coordinates) {
                         Toast.makeText(WeatherActivity.this, coordinates.toString(), Toast.LENGTH_SHORT).show();
+                        weatherDataService.getWeatherReportByLonLat();
                     }
                 });
             }

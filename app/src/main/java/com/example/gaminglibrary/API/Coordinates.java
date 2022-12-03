@@ -2,6 +2,7 @@ package com.example.gaminglibrary.API;
 
 public class Coordinates {
 
+    private String cityName;
     private String lon;
     private String lat;
 
@@ -9,9 +10,18 @@ public class Coordinates {
 
     }
 
-    public Coordinates(String lon, String lat) {
+    public Coordinates(String lon, String lat, String cityName) {
+        this.cityName = cityName;
         this.lon = lon;
         this.lat = lat;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
     public String getLon() {
@@ -33,7 +43,8 @@ public class Coordinates {
     @Override
     public String toString() {
         return "Coordinates{" +
-                "lon='" + lon + '\'' +
+                "cityName='" + cityName + '\'' +
+                ", lon='" + lon + '\'' +
                 ", lat='" + lat + '\'' +
                 '}';
     }

@@ -66,7 +66,7 @@ public class WeatherDataService {
     }
 
     public void getWeatherReportByLonLat(VolleyResponseListenerForWeaterReport volleyResponseListenerForWeaterReport){
-       String url = QUERY_FOR_WEATHER + coordinates.getLat().toString()+"&lon="+coordinates.getLon().toString()+"&appid="+APIKEY+UNITS;
+       String url = QUERY_FOR_WEATHER + coordinates.getLat()+"&lon="+coordinates.getLon()+"&appid="+APIKEY+UNITS;
         WeatherReportModel weatherReportModel = new WeatherReportModel();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {

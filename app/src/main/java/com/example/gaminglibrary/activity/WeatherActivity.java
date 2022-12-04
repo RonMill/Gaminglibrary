@@ -35,7 +35,8 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        ////API WAS GEHT ALLA
+        this.setTitle("Wetter");
+
         btn_getWeather = (Button) findViewById(R.id.GET_WEATHERBUTTON);
         et_dataInput = (EditText) findViewById(R.id.EDITTEXTLOCATION);
         weatherImage = (ImageView) findViewById(R.id.WEATHERIMAGE);

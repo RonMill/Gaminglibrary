@@ -48,7 +48,7 @@ public class MyAdapter extends ArrayAdapter<GameModel> {
         TextView name = (TextView) listItem.findViewById(R.id.MY_GAME_NAME);
         name.setText(gameModel.getName());
         TextView price = (TextView) listItem.findViewById(R.id.MY_GAME_PRICE);
-        price.setText(String.valueOf(gameModel.getPrice()) + "€");
+        price.setText(String.valueOf(gameModel.getPrice()) + " €");
         TextView rating = (TextView) listItem.findViewById(R.id.MY_GAME_RATING);
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i< gameModel.getRating();i++)stringBuilder.append("★");

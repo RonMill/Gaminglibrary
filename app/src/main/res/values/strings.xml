@@ -18,4 +18,6 @@
     <string name="mark_for_delete">Zum Löschen auswählen</string>
     <string name="save">Speichern</string>
     <string name="delete_list">Liste löschen</string>
+    <string name="game_price">Preis:</string>
+    <string name="game_review">Sterne:</string>
 </resources>

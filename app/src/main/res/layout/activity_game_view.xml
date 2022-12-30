@@ -16,66 +16,42 @@
             android:layout_margin="10dp"
             android:src="@android:drawable/ic_menu_gallery" />
 
-        <Button
-            android:id="@+id/ADD_GALARY"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/GAME_CREATE_IMAGE"
-            android:layout_gravity="center"
-            android:text="@string/open_galery"
-            android:textColor="@color/black" />
-
-        <EditText
+        <TextView
             android:id="@+id/GAME_NAME"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:hint="Spielname"
-            android:textAlignment="center"></EditText>
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold"></TextView>
         <TableLayout
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp">
             <TableRow>
-                <TextView
-                    android:text="@string/game_price"></TextView>
 
-                <EditText
+                <TextView
                     android:id="@+id/GAME_PRICE"
                     android:layout_width="125dp"
                     android:layout_height="wrap_content"
                     android:hint="Preis"
                     android:inputType="numberDecimal"
-                    android:textAlignment="center"></EditText>
+                    android:textAlignment="center"
+                    android:textSize="15sp"></TextView>
 
-            </TableRow>
-            <TableRow>
                 <TextView
-                    android:text="@string/game_review"></TextView>
-                <EditText
                     android:id="@+id/GAME_REVIEW"
                     android:layout_width="125dp"
                     android:layout_height="wrap_content"
                     android:hint="Anzahl Sterne"
                     android:inputType="numberDecimal"
-                    android:textAlignment="center"></EditText>
-
+                    android:textAlignment="center"
+                    android:textSize="15sp"></TextView>
             </TableRow>
         </TableLayout>
-
-
-        <Button
-            android:id="@+id/ADD_GAME"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:text="@string/insert_game"
-            android:textAlignment="center"
-            android:textColor="@color/black" />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

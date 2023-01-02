@@ -123,6 +123,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void test(){
+
+    }
+
     @Override
     public void onCreateContextMenu(android.view.ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -170,6 +174,16 @@ public class MainActivity extends AppCompatActivity {
     public void loadGames(ArrayList<GameModel> arrayList) {
         myAdapter = new MyAdapter(this, arrayList);
         listView.setAdapter(myAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent i1 = new Intent(MainActivity.this, GameViewActivity.class);
+                i1.putExtra("CURRENTLIST", (Parcelable) currentList);
+                i1.putExtra("INDEX",i);
+                setResult(Activity.RESULT_OK, i1);
+                someActivityResultLauncher.launch(i1);
+            }
+        });
     }
 
 
@@ -279,8 +293,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.EDIT:
                 if (allLists.size() > 0 && currentList != null) {

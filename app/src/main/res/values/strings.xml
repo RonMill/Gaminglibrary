@@ -20,4 +20,5 @@
     <string name="delete_list">Liste löschen</string>
     <string name="game_price">Preis:</string>
     <string name="game_review">Sterne:</string>
+    <string name="game_name">Spielname:</string>
 </resources>

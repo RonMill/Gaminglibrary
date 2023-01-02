@@ -25,38 +25,45 @@
             android:text="@string/open_galery"
             android:textColor="@color/black" />
 
-        <EditText
-            android:id="@+id/GAME_NAME"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:hint="Spielname"
-            android:textAlignment="center"></EditText>
         <TableLayout
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp">
+
             <TableRow>
-                <TextView
-                    android:text="@string/game_price"></TextView>
+                <TextView android:text="@string/game_name"
+                    android:layout_marginTop="30dp"></TextView>
+                <EditText
+                    android:id="@+id/GAME_NAME"
+                    android:layout_marginTop="30dp"
+                    android:layout_width="206dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Spielname"
+                    android:textAlignment="center"></EditText>
+            </TableRow>
+
+            <TableRow>
+
+                <TextView android:text="@string/game_price"></TextView>
 
                 <EditText
                     android:id="@+id/GAME_PRICE"
-                    android:layout_width="125dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Preis"
                     android:inputType="numberDecimal"
                     android:textAlignment="center"></EditText>
 
             </TableRow>
+
             <TableRow>
-                <TextView
-                    android:text="@string/game_review"></TextView>
+
+                <TextView android:text="@string/game_review"></TextView>
+
                 <EditText
                     android:id="@+id/GAME_REVIEW"
-                    android:layout_width="125dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Anzahl Sterne"
                     android:inputType="numberDecimal"

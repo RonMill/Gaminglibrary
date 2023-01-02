@@ -96,12 +96,23 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
             buildDeleteDialog();
             alertDialog.show();
         } else if (view.getId() == save.getId()) {
-            listDatabase.deleteSelectedGames(allBoxIDs, currentList.getId());
+            String newListName = editText.getText().toString();
+            boolean insideIf = false;
             Intent resultIntent = new Intent();
-            if (currentList.getGames().size() > allBoxIDs.size()) {
+            // check if the user changes the list name
+            if (!currentList.getName().equals(newListName)) {
+                listDatabase.updateListName(currentList.getId(), newListName);
+                insideIf = true;
+            }
+            // check if the user wanna delete some games
+            if (allBoxIDs.size() > 0) {
+                listDatabase.deleteSelectedGames(allBoxIDs, currentList.getId());
                 for (int i : allBoxIDs) {
                     listDatabase.changeGameID(i, currentList.getId());
                 }
+                insideIf = true;
+            }
+            if (insideIf) {
                 setResult(5, resultIntent);
             } else {
                 setResult(6, resultIntent);
@@ -128,11 +139,11 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
                 Log.d("HS_KL", currentList.toString());
 
                 listDatabase.deleteSelectedList(currentList);
+                listDatabase.deleteAllGamesFromCurrentList(currentList);
                 allListSize = allListSize - 1;
                 if (allListSize > 0) {
                     listDatabase.changeListIDs(currentList.getId());
                 }
-                listDatabase.deleteAllGamesFromCurrentList(currentList);
                 Toast.makeText(EditListActivity.this, "Liste wurde erfolgreich gelöscht", Toast.LENGTH_SHORT).show();
                 Intent resultIntent = new Intent();
                 setResult(4, resultIntent);

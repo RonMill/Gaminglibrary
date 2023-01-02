@@ -1,6 +1,7 @@
 package com.example.gaminglibrary.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
@@ -61,11 +62,14 @@ public class WeatherActivity extends AppCompatActivity {
 
                             @Override
                             public void onResponse(WeatherReportModel weatherReportModel) {
-
+                                Log.d("HS_KL","HIIIIIIIIIeeeer: "+weatherReportModel.getDescription());
                                 switch(weatherReportModel.getDescription()){
+
                                     case "Bedeckt": weatherImage.setImageResource(R.drawable.icons8_cloud_48); break;
                                     case "Sonnig": weatherImage.setImageResource(R.drawable.icons8_sun_48); break;
                                     case "Regen": weatherImage.setImageResource(R.drawable.icons8_torrential_rain_48); break;
+                                    case "Leichter Regen": weatherImage.setImageResource(R.drawable.icons8_torrential_rain_48); break;
+                                    case "Ein paar Wolken": weatherImage.setImageResource(R.drawable.icons8_cloud_48); break;
                                     default:
                                 }
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
@@ -286,13 +287,17 @@ public class ListDatabase extends SQLiteOpenHelper {
 
         do {
             int cursorid = cursor.getInt(cursor.getColumnIndexOrThrow(TABLE_GAME_ID));
-
-            if (cursorid > deletedGameID) {
+            Log.d("HS_KL", "Cursorid for if: " + String.valueOf(cursorid));
+            int counter = cursorid;
+            while (counter > deletedGameID) {
                 ContentValues values = new ContentValues();
+                Log.d("HS_KL", "tmp=" + String.valueOf(cursorid - 1));
                 values.put(TABLE_GAME_ID, cursorid - 1);
                 String where = TABLE_GAME_ID + "=?";
+                Log.d("HS_KL", "Cursorid: " + String.valueOf(cursorid));
                 String[] whereArg = new String[]{Integer.toString(cursorid)};
                 db.update(TABLE_GAME, values, where, whereArg);
+                counter--;
             }
         }
         while (cursor.moveToNext());

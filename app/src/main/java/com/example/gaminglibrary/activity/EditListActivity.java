@@ -26,6 +26,8 @@ import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class EditListActivity extends AppCompatActivity implements View.OnClickListener {
@@ -107,8 +109,12 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
             // check if the user wanna delete some games
             if (allBoxIDs.size() > 0) {
                 listDatabase.deleteSelectedGames(allBoxIDs, currentList.getId());
-                for (int i : allBoxIDs) {
-                    listDatabase.changeGameID(i, currentList.getId());
+                Collections.reverse(allBoxIDs);
+                if(currentList.getGames().size() > allBoxIDs.size()){
+                    Log.d("HS_KL", "Döner mit Pommes: " + String.valueOf(allBoxIDs));
+                    for (int i : allBoxIDs) {
+                        listDatabase.changeGameID(i, currentList.getId());
+                    }
                 }
                 insideIf = true;
             }

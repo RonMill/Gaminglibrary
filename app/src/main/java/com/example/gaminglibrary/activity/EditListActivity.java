@@ -113,7 +113,7 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
                 if(currentList.getGames().size() > allBoxIDs.size()){
                     Log.d("HS_KL", "Döner mit Pommes: " + String.valueOf(allBoxIDs));
                     for (int i : allBoxIDs) {
-                        listDatabase.changeGameID(i, currentList.getId());
+                        listDatabase.changeGameIDs(i, currentList.getId());
                     }
                 }
                 insideIf = true;

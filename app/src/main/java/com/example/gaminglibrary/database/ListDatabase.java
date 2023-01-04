@@ -287,14 +287,28 @@ public class ListDatabase extends SQLiteOpenHelper {
 
         do {
             int cursorid = cursor.getInt(cursor.getColumnIndexOrThrow(TABLE_GAME_ID));
-            Log.d("HS_KL", "Cursorid for if: " + String.valueOf(cursorid));
+            if (cursorid > deletedGameID) {
+                ContentValues values = new ContentValues();
+                values.put(TABLE_GAME_ID, cursorid - 1);
+                String where = TABLE_GAME_ID + "=?";
+                String[] whereArg = new String[]{Integer.toString(cursorid)};
+                db.update(TABLE_GAME, values, where, whereArg);
+            }
+        }
+        while (cursor.moveToNext());
+    }
+
+    public void changeGameIDs(int deletedGameID, int listID) {
+        Cursor cursor = selectAllGamesFromList(listID);
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        do {
+            int cursorid = cursor.getInt(cursor.getColumnIndexOrThrow(TABLE_GAME_ID));
             int counter = cursorid;
             while (counter > deletedGameID) {
                 ContentValues values = new ContentValues();
-                Log.d("HS_KL", "tmp=" + String.valueOf(cursorid - 1));
                 values.put(TABLE_GAME_ID, cursorid - 1);
                 String where = TABLE_GAME_ID + "=?";
-                Log.d("HS_KL", "Cursorid: " + String.valueOf(cursorid));
                 String[] whereArg = new String[]{Integer.toString(cursorid)};
                 db.update(TABLE_GAME, values, where, whereArg);
                 counter--;

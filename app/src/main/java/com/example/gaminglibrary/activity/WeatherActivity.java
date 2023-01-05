@@ -67,6 +67,7 @@ public class WeatherActivity extends AppCompatActivity {
                                     case "Sonnig": weatherImage.setImageResource(R.drawable.icons8_sun_48); break;
                                     case "Regen": weatherImage.setImageResource(R.drawable.icons8_torrential_rain_48); break;
                                     default:
+                                        weatherImage.setImageResource(R.drawable.icons8_default);
                                 }
 
                                 temperature.setText("Aktuell: "+weatherReportModel.getTemperature().getCurrent()+" °C"

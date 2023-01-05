@@ -14,7 +14,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class WeatherDataService {
-    //String urlForCity = "https://api.openweathermap.org/geo/1.0/direct?q=schmittweiler,de&appid=ff76494d7fec7ca86a761ecc9dd6b12a";
     public static final String QUERY_FOR_COORDINATES = "https://api.openweathermap.org/geo/1.0/direct?q=";
     public static final String QUERY_FOR_WEATHER = "https://api.openweathermap.org/data/2.5/weather?lat=";
     public static final String COUNTRY_CODE = "de";
@@ -44,7 +43,6 @@ public class WeatherDataService {
                     coordinates.setCityName(cityName);
                     coordinates.setLon(coord.getString("lon"));
                     coordinates.setLat(coord.getString("lat"));
-                    //Toast.makeText(context,coordinates.toString(),Toast.LENGTH_SHORT).show();
                     volleyResponseListenerForCoordinates.onResponse(coordinates);
                 } catch (JSONException e) {
                     e.printStackTrace();

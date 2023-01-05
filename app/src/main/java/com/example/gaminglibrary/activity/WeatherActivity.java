@@ -61,7 +61,7 @@ public class WeatherActivity extends AppCompatActivity {
 
                             @Override
                             public void onResponse(WeatherReportModel weatherReportModel) {
-
+                                //TODO: WETTERBILDER
                                 switch(weatherReportModel.getDescription()){
                                     case "Bedeckt": weatherImage.setImageResource(R.drawable.icons8_cloud_48); break;
                                     case "Sonnig": weatherImage.setImageResource(R.drawable.icons8_sun_48); break;
@@ -74,7 +74,6 @@ public class WeatherActivity extends AppCompatActivity {
                                                 + "\nMin: "+weatherReportModel.getTemperature().getMin()+" °C"
                                                 +"\nMax: "+weatherReportModel.getTemperature().getMax()+" °C"
                                 );
-                                //TODO: Fill lv_WeatherReport with weatherReportModel
                             }
                         });
                     }

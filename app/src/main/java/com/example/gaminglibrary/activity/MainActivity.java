@@ -156,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.CONTEXT_DELETE:
                 listDatabase.deleteGame(currentList.getGames().get(index));
+
+                //  > 1 dann bei einem Spiel die IDs nicht angepasst werden müssen
                 if (allLists.get(currentList.getId() - 1).getGames().size() > 1) {
                     listDatabase.changeGameID(currentList.getGames().get(index).getId(), currentList.getId());
                 }

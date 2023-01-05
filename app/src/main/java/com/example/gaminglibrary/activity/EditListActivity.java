@@ -108,14 +108,23 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
             }
             // check if the user wanna delete some games
             if (allBoxIDs.size() > 0) {
-                listDatabase.deleteSelectedGames(allBoxIDs, currentList.getId());
+
+                //Sortierung von hoch nach niedrig da sonst aufrückende elemente fälschlich gelöscht werden
+                Collections.sort(allBoxIDs);
                 Collections.reverse(allBoxIDs);
-                if(currentList.getGames().size() > allBoxIDs.size()){
-                    Log.d("HS_KL", "Döner mit Pommes: " + String.valueOf(allBoxIDs));
-                    for (int i : allBoxIDs) {
-                        listDatabase.changeGameIDs(i, currentList.getId());
+
+                Log.d("HS_KL", "allBoxIDs" + allBoxIDs.toString());
+                for (int deleteGameID : allBoxIDs) {
+
+                    //deleteGameID - 1, da die lokale liste bei 0 beginnt und deleteGameID sich nach DB richtet also mit 1 beginnt
+                    listDatabase.deleteGame(currentList.getGames().get(deleteGameID - 1));
+
+                    //  > 1 dann bei einem Spiel die IDs nicht angepasst werden müssen
+                    if (currentList.getGames().size() > 1) {
+                        listDatabase.changeGameID(currentList.getGames().get(deleteGameID - 1).getId(), currentList.getId());
                     }
                 }
+
                 insideIf = true;
             }
             if (insideIf) {

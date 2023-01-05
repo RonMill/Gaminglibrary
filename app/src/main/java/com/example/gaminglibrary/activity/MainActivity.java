@@ -36,7 +36,6 @@ import com.example.gaminglibrary.R;
 import com.example.gaminglibrary.model.GameModel;
 import com.example.gaminglibrary.model.ListModel;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -47,10 +46,8 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     private int STORAGE_PERMISSION_CODE = 1;
     private MyAdapter myAdapter;
-    private int index;
+    private int indexContextMenuItem;
 
-
-    //TODO: Später bei verlassen der App currentList in sharedPref saven
     static ListModel currentList;
     static ListDatabase listDatabase;
     AlertDialog dialog;
@@ -63,14 +60,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Rechte um Bild aus der Bib zu holen
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
 
         listView = (ListView) findViewById(R.id.MY_LISTVIEW);
         registerForContextMenu(listView);
         initDB();
-        buildAlertBox();
+        buildAlertBox(); // HIER ALA
         this.setTitle("KEINE LISTE AUSGEWAEHLT");
 
+        // Wird benötigt, damit das Programm erst weiter läuft, wenn aus der Activity X etwas returned wird
         someActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -90,10 +89,10 @@ public class MainActivity extends AppCompatActivity {
                             if (allLists.size() > 0) {
                                 currentList = allLists.get(0);
                                 MainActivity.this.setTitle(currentList.getName());
-                                loadGames(currentList.getGames());
+                                loadGamesIntoAdapterView(currentList.getGames());
                             } else {
                                 MainActivity.this.setTitle("KEINE LISTE AUSGEWAEHLT");
-                                loadGames(new ArrayList<GameModel>());
+                                loadGamesIntoAdapterView(new ArrayList<GameModel>());
                                 dialog.show();
                             }
                             updateSubMenu();
@@ -105,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 allLists.get(currentList.getId() - 1).getGames().clear();
                                 currentList.getGames().clear();
-                                loadGames(currentList.getGames());
+                                loadGamesIntoAdapterView(currentList.getGames());
                             }
                         }
                     }
@@ -117,14 +116,9 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
         } else {
             currentList = allLists.get(0);
-            //addSomeFakeData();
             this.setTitle(allLists.get(0).getName());
-            loadGames(currentList.getGames());
+            loadGamesIntoAdapterView(currentList.getGames());
         }
-    }
-
-    private void test() {
-
     }
 
     @Override
@@ -134,46 +128,44 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater mi = getMenuInflater();
         mi.inflate(R.menu.start_activity_contextmenu, menu);
 
-        index = ((AdapterView.AdapterContextMenuInfo) menuInfo).position;
+        indexContextMenuItem = ((AdapterView.AdapterContextMenuInfo) menuInfo).position;
         MenuItem edit = menu.findItem(R.id.CONTEXT_EDIT);
         MenuItem delete = menu.findItem(R.id.CONTEXT_DELETE);
 
-        edit.setTitle(allLists.get(currentList.getId() - 1).getGames().get(index).getName() + " editieren");
-        delete.setTitle(allLists.get(currentList.getId() - 1).getGames().get(index).getName() + " löschen");
+        edit.setTitle(allLists.get(currentList.getId() - 1).getGames().get(indexContextMenuItem).getName() + " editieren");
+        delete.setTitle(allLists.get(currentList.getId() - 1).getGames().get(indexContextMenuItem).getName() + " löschen");
 
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        //TODO: Switch-Case mit den Kontextmenu-Items share und rate implementieren
         switch (item.getItemId()) {
             case R.id.CONTEXT_EDIT:
                 Intent i1 = new Intent(this, InsertGameActivity.class);
                 i1.putExtra("CURRENTLIST", (Parcelable) currentList);
-                i1.putExtra("INDEX", index);
+                i1.putExtra("INDEX", indexContextMenuItem);
                 setResult(Activity.RESULT_OK, i1);
                 someActivityResultLauncher.launch(i1);
                 return true;
             case R.id.CONTEXT_DELETE:
-                listDatabase.deleteGame(currentList.getGames().get(index));
+                listDatabase.deleteGame(currentList.getGames().get(indexContextMenuItem));
 
-                //  > 1 dann bei einem Spiel die IDs nicht angepasst werden müssen
+                //  > 1 da bei einem Spiel die IDs nicht angepasst werden müssen
                 if (allLists.get(currentList.getId() - 1).getGames().size() > 1) {
-                    listDatabase.changeGameID(currentList.getGames().get(index).getId(), currentList.getId());
+                    listDatabase.changeGameID(currentList.getGames().get(indexContextMenuItem).getId(), currentList.getId());
                 }
                 refreshList();
                 currentList = allLists.get(currentList.getId() - 1);
-                loadGames(currentList.getGames());
+                loadGamesIntoAdapterView(currentList.getGames());
                 return true;
         }
-
         return super.onContextItemSelected(item);
     }
 
     /**
-     * load all games into adapter --> Show all games from the current list on the start page
+     * Lädt alle Spiele in den Adapter rein --> Liste alle Spiele aus der aktuellen Liste auf der Startliste
      */
-    public void loadGames(ArrayList<GameModel> arrayList) {
+    public void loadGamesIntoAdapterView(ArrayList<GameModel> arrayList) {
         myAdapter = new MyAdapter(this, arrayList);
         listView.setAdapter(myAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -191,18 +183,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDB() {
         listDatabase = new ListDatabase(this);
-        //listDatabase.deleteAllLists(allLists);
-        //addSomeFakeData();
         refreshAllLists();
-        //listenDatenbank.deleteList(allLists);
-        //listenDatenbank.deleteList(searchListModelById(2),allLists);
-        //listDatabase.deleteAllGames(allLists);
-        //deleteListByID(1);
-        //deleteListByID(2);
     }
 
     /**
-     * Creating alert box, if the user wanna create a new list or the app starts the first time
+     * Erstelle eine AlertBox, wenn der Benutzer eine neue Liste hinzufügen möchte oder die App zum ersten Mal startet
      */
     private void buildAlertBox() {
         // Set up the alert box
@@ -231,11 +216,10 @@ public class MainActivity extends AppCompatActivity {
                 input.setText("");
                 updateSubMenu();
                 currentList = allLists.get(allLists.size() - 1);
-                loadGames(currentList.getGames());
+                loadGamesIntoAdapterView(currentList.getGames());
                 MainActivity.this.setTitle(currentList.getName());
             }
         });
-        //this.setTitle(allLists.get(allLists.size() - 1).getName());
         dialog = builder.create(); // create current dialog
     }
 
@@ -249,30 +233,8 @@ public class MainActivity extends AppCompatActivity {
         myToast.show(); // show info toast for the user
     }
 
-
-    private void addSomeFakeData() {
-        listDatabase.insertList(1, "Test1");
-        listDatabase.insertList(2, "Test2");
-        listDatabase.insertList(3, "Test3");
-        listDatabase.insertGame(1, "League1", 1.33F, 3, 1);
-        listDatabase.insertGame(2, "League3", 1.33F, 3, 1);
-        listDatabase.insertGame(3, "League4", 1.33F, 3, 1);
-        listDatabase.insertGame(4, "League2", 1.33F, 3, 1);
-        listDatabase.insertGame(1, "CS4", 1.33F, 3, 2);
-        listDatabase.insertGame(2, "CS1", 1.33F, 3, 2);
-        listDatabase.insertGame(3, "CS2", 1.33F, 3, 2);
-        listDatabase.insertGame(4, "CS3", 1.33F, 3, 2);
-        listDatabase.insertGame(1, "WOW1", 1.33F, 3, 3);
-        listDatabase.insertGame(2, "WOW2", 1.33F, 3, 3);
-        listDatabase.insertGame(3, "WOW3", 1.33F, 3, 3);
-        listDatabase.insertGame(4, "WOW4", 1.33F, 3, 3);
-
-
-    }
-
     /**
-     * Add interaction menu at the top
-     *
+     * Füge alle Listen im Optionsmenu hinzu
      * @param menu
      * @return
      */
@@ -304,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.EDIT:
                 if (allLists.size() > 0 && currentList != null) {
@@ -321,14 +282,14 @@ public class MainActivity extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     currentList.getGames().sort(Comparator.comparing(GameModel::getName));
                     allLists.get(currentList.getId() - 1).getGames().sort(Comparator.comparing(GameModel::getName));
-                    loadGames(currentList.getGames());
+                    loadGamesIntoAdapterView(currentList.getGames());
                 }
                 return true;
             case R.id.SORT_NUMBER:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     currentList.getGames().sort(Comparator.comparing(GameModel::getPrice));
                     allLists.get(currentList.getId() - 1).getGames().sort(Comparator.comparing(GameModel::getPrice));
-                    loadGames(currentList.getGames());
+                    loadGamesIntoAdapterView(currentList.getGames());
                 }
                 return true;
             case R.id.WEATHER:
@@ -346,12 +307,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             default:
+                // Dynamische Liste unserer Listen wird durchlaufen und verglichen, ob Itemid == listenid vorhanden ist  --> Ja: currentList update
+                // Default, da switch-Case feste Parameter benötigt und die Liste dynamisch ist
                 for (ListModel listModel : allLists) {
                     if (listModel.getId() == item.getItemId()) {
-                        Log.d("HS_KL", listModel.getName());
                         currentList = listModel;
                         this.setTitle(listModel.getName());
-                        loadGames(currentList.getGames());
+                        loadGamesIntoAdapterView(currentList.getGames());
                         return true;
                     }
                 }
@@ -364,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * add new game into all Lists
+     * Füge ein neues Spiel in die Liste allList hinzu und setze currentList neu
      */
     private void addGameIntoAllLists() {
         try (Cursor cursor = listDatabase.selectAllGamesFromList(currentList.getId())) {
@@ -386,12 +348,12 @@ public class MainActivity extends AppCompatActivity {
                 } while (cursor.moveToNext());
             }
         }
-        loadGames(currentList.getGames());
+        loadGamesIntoAdapterView(currentList.getGames());
         currentList = allLists.get(currentList.getId() - 1);
     }
 
     /**
-     * Load allgames new in allLists and set currentList new
+     * Aktualisiere allGames in der aktuellen allLists und setzte currentList neu
      */
     private void refreshList() {
         allLists.get(currentList.getId() - 1).getGames().clear();
@@ -422,9 +384,12 @@ public class MainActivity extends AppCompatActivity {
             allLists.get(currentList.getId() - 1).setGames(gameList);
         }
         currentList = allLists.get(currentList.getId() - 1);
-        loadGames(currentList.getGames());
+        loadGamesIntoAdapterView(currentList.getGames());
     }
 
+    /**
+     * Lädt jede Liste aus der Datenbank mit allen Spielen
+     */
     @SuppressLint("Range")
     public void refreshAllLists() {
         allLists.clear(); // clear list to avoid double entrys
@@ -449,8 +414,6 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 gameList.add(new GameModel(gameID, gameName, price, rating, listID, null));
                             }
-
-
                         } while (cursor1.moveToNext());
                     }
                     allLists.add(new ListModel(listeid, titel, gameList));

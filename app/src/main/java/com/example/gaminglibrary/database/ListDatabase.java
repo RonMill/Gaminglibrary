@@ -32,17 +32,6 @@ public class ListDatabase extends SQLiteOpenHelper {
     public static final String COLUMN_LIST = "listeid";
     public static final String COLUMN_IMAGE_URI = "imageUri";
 
-    public static final String TABLE_CATEGORY = "kategorie";
-    public static final String COLUMN_CATEGORY_ID = "listeid";
-    public static final String COLUMN_GAME = "spielid";
-    public static final String COLUMN_CATEGORY_NAME = "name";
-
-    public static final String TABLE_TAG = "tag";
-    public static final String COLUMN_TAG_ID = "tagid";
-    public static final String COLUMN_GAMES = "spielid";
-    public static final String COLUMN_TAG_NAME = "name";
-
-
     public ListDatabase(Context cxt) {
         super(cxt, DATABASE_NAMES, null, DATABASE_VERSION);
     }
@@ -67,32 +56,12 @@ public class ListDatabase extends SQLiteOpenHelper {
                         "PRIMARY KEY (" + TABLE_GAME_ID + ", " + COLUMN_LIST + ")" +
                         ")"
         );
-
-        db.execSQL(
-                "CREATE TABLE " + TABLE_CATEGORY + " (" +
-                        COLUMN_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        COLUMN_GAME + " INTEGER," +
-                        COLUMN_CATEGORY_NAME + " TEXT" +
-                        ")"
-        );
-
-        db.execSQL(
-                "CREATE TABLE " + TABLE_TAG + " (" +
-                        COLUMN_TAG_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        COLUMN_GAMES + " INTEGER," +
-                        COLUMN_TAG_NAME + " TEXT" +
-                        ")"
-        );
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIST);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GAME);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TAG);
-
         onCreate(db);
     }
 
@@ -127,31 +96,6 @@ public class ListDatabase extends SQLiteOpenHelper {
         db.insert(TABLE_GAME, null, neueZeile);
     }
 
-    public void insertCategory(int categoryID, int gameID, String categoryName) {
-        ContentValues newLine = new ContentValues();
-        newLine.put(COLUMN_CATEGORY_ID, categoryID);
-        newLine.put(COLUMN_GAME, gameID);
-        newLine.put(COLUMN_CATEGORY_NAME, categoryName);
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(TABLE_CATEGORY, null, newLine);
-    }
-
-    //TODO: Man kann nur Tags anlegen wenn man gleichzeitig ein Spiel hinzufügt, vielleicht etwas doof
-    public void insertTag(int tagID, int gameID, String tagName) {
-        ContentValues newLine = new ContentValues();
-        newLine.put(COLUMN_TAG_ID, tagID);
-        newLine.put(COLUMN_GAME, gameID);
-        newLine.put(COLUMN_TAG_NAME, tagName);
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(TABLE_TAG, null, newLine);
-    }
-
-    public Cursor selectAllGames() {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_GAME, null);
-        cursor.moveToFirst();
-        return cursor;
-    }
 
     public Cursor selectAllGamesFromList(int listID) {
         SQLiteDatabase db = getReadableDatabase();
@@ -175,55 +119,12 @@ public class ListDatabase extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor selectTagsFromGame(int id) {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_TAG + " WHERE " + COLUMN_GAMES + " = " + id, null);
-        cursor.moveToFirst();
-        return cursor;
-    }
-
-    public Cursor selectCategoryFromGames(int id) {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_CATEGORY + " WHERE " + COLUMN_GAME + " = " + id, null);
-        cursor.moveToFirst();
-        return cursor;
-    }
-
     public void deleteSelectedList(ListModel listModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         String where = COLUMN_LIST_ID + "=?";
         String[] whereArg = new String[]{Integer.toString(listModel.getId())};
         db.delete(TABLE_LIST, where, whereArg);
         //allLists.remove(listModel);
-    }
-
-    public void deleteAllLists(List<ListModel> allLists) {
-        for (ListModel listModel : allLists) {
-            SQLiteDatabase db = this.getWritableDatabase();
-            String where = COLUMN_LIST_ID + "=?";
-            String[] whereArg = new String[]{Integer.toString(listModel.getId())};
-            db.delete(TABLE_LIST, where, whereArg);
-        }
-    }
-
-    public void deleteAllGames(List<ListModel> allLists) {
-        for (ListModel listModel : allLists) {
-            for (GameModel gameModel : listModel.getGames()) {
-                SQLiteDatabase db = this.getWritableDatabase();
-                String where = TABLE_GAME_ID + "=?";
-                String[] whereArg = new String[]{Integer.toString(gameModel.getId())};
-                db.delete(TABLE_GAME, where, whereArg);
-            }
-        }
-    }
-
-    public void deleteSelectedGames(List<Integer> gameIDs, int listid) {
-        for (int id : gameIDs) {
-            SQLiteDatabase db = this.getWritableDatabase();
-            String where = TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?";
-            String[] whereArg = new String[]{String.valueOf(id), String.valueOf(listid)};
-            db.delete(TABLE_GAME, where, whereArg);
-        }
     }
 
     public void deleteAllGamesFromCurrentList(ListModel currentlist) {
@@ -275,9 +176,6 @@ public class ListDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         do {
-            int cursorGameID = cursor.getInt(cursor.getColumnIndexOrThrow(TABLE_GAME_ID));
-            int cursorlistID = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_LIST_ID));
-
             ContentValues values = new ContentValues();
             values.put(COLUMN_LIST_ID, listID);
             String where = COLUMN_LIST_ID + "=?"; // Attribut game id unnötig, da alle Spiele der listid ausgewählt wurden und geupdated werden
@@ -337,12 +235,4 @@ public class ListDatabase extends SQLiteOpenHelper {
         String[] whereArg = new String[]{Integer.toString(listID)};
         db.update(TABLE_LIST, neueZeile, where, whereArg);
     }
-
-    /*
-    public void updateTag(int tagID, String newText) {
-        SQLiteDatabase db = getReadableDatabase();
-        db.execSQL("UPDATE " + TABELLE_TAG + " SET " + SPALTE_TAG_NAME + " = " + newText + " WHERE " + SPALTE_TAG_ID + " = " + tagID, null);
-    }
-     */
-
 }

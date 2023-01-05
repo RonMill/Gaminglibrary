@@ -45,22 +45,6 @@
         android:title="@string/weather"
         app:showAsAction="never" />
     <item
-        android:id="@+id/STATISTIC"
-        android:title="@string/statistic"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/SETTINGS"
-        android:title="@string/option"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/IMPORT"
-        android:title="@string/import_list"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/EXPORT"
-        android:title="@string/export"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/INSERT_GAME"
         android:title="@string/insert_game"
         app:showAsAction="never" />

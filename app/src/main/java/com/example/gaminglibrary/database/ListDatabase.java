@@ -241,7 +241,14 @@ public class ListDatabase extends SQLiteOpenHelper {
         String where = TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?";
         String[] whereArg = new String[]{String.valueOf(game.getId()), String.valueOf(game.getListID())};
         db.delete(TABLE_GAME, where, whereArg);
+    }
 
+    public void deleteGame(int gameID, int listID) {
+        Log.d("HS_KL", "Currentlist inside delete method: " + listID);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?";
+        String[] whereArg = new String[]{String.valueOf(gameID), String.valueOf(listID)};
+        db.delete(TABLE_GAME, where, whereArg);
     }
 
     public void changeListIDs(int deletedID) {
@@ -290,8 +297,9 @@ public class ListDatabase extends SQLiteOpenHelper {
             if (cursorid > deletedGameID) {
                 ContentValues values = new ContentValues();
                 values.put(TABLE_GAME_ID, cursorid - 1);
-                String where = TABLE_GAME_ID + "=?";
-                String[] whereArg = new String[]{Integer.toString(cursorid)};
+                //String where = TABLE_GAME_ID + "=?";
+                String where = TABLE_GAME_ID + "=? AND " + COLUMN_LIST_ID + "=?";
+                String[] whereArg = new String[]{Integer.toString(cursorid), String.valueOf(listID)};
                 db.update(TABLE_GAME, values, where, whereArg);
             }
         }

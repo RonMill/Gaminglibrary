@@ -85,7 +85,6 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
                     } else {
                         allBoxIDs.remove(allBoxIDs.indexOf(v.getId()));
                     }
-                    Log.d("HS_KL", "ID: " + allBoxIDs.toString() + "Currentlist: " + currentList.getId());
                 }
             });
             linearLayout.addView(checkBox);
@@ -113,16 +112,13 @@ public class EditListActivity extends AppCompatActivity implements View.OnClickL
                 Collections.sort(allBoxIDs);
                 Collections.reverse(allBoxIDs);
 
-                Log.d("HS_KL", "allBoxIDs" + allBoxIDs.toString());
                 for (int deleteGameID : allBoxIDs) {
 
                     //deleteGameID - 1, da die lokale liste bei 0 beginnt und deleteGameID sich nach DB richtet also mit 1 beginnt
-                    //listDatabase.deleteGame(currentList.getGames().get(deleteGameID - 1));
                     listDatabase.deleteGame(deleteGameID, currentList.getId());
 
                     //  > 1 dann bei einem Spiel die IDs nicht angepasst werden müssen
                     if (currentList.getGames().size() > 1) {
-                        //listDatabase.changeGameID(currentList.getGames().get(deleteGameID - 1).getId(), currentList.getId());
                         listDatabase.changeGameID(deleteGameID, currentList.getId());
                     }
                 }

@@ -71,55 +71,6 @@ public class GameViewActivity extends AppCompatActivity {
             gameReview.setText(String.valueOf(gameModel.getRating())+" ★");
         }
 
-        // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
-        someActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK) {
-                            try {
-                                // There are no request codes
-                                Intent data = result.getData();
-                                imageFilePath = data.getData();
-                                imageToStore = MediaStore.Images.Media.getBitmap(getContentResolver(), imageFilePath);
-
-                                grantUriPermission(
-                                        getPackageName(), imageFilePath,
-                                        Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION |
-                                                Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                                getContentResolver().takePersistableUriPermission(
-                                        imageFilePath, Intent.FLAG_GRANT_READ_URI_PERMISSION |
-                                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-                                String wholeID = DocumentsContract.getDocumentId(data.getData());
-                                String id = wholeID.split(":")[1];
-                                String[] column = {MediaStore.Images.Media.DATA};
-                                String sel = MediaStore.Images.Media._ID + "=?";
-                                Cursor cursor = getContentResolver().
-                                        query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                                column, sel, new String[]{id}, null);
-
-                                int columnIndex = cursor.getColumnIndex(column[0]);
-
-                                if (cursor.moveToFirst()) {
-                                    filePath = cursor.getString(columnIndex);
-                                }
-                                File imgFile = new File(filePath);
-                                Log.d("HS_KL", filePath);
-                                Log.d("HS_KL", imgFile.getAbsolutePath());
-
-                                if (imgFile.exists()) {
-                                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                                    currentGameImage.setImageBitmap(myBitmap);
-                                }
-                            } catch (IOException e) {
-                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                });
     }
 
 }

@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void test(){
+    private void test() {
 
     }
 
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent i1 = new Intent(MainActivity.this, GameViewActivity.class);
                 i1.putExtra("CURRENTLIST", (Parcelable) currentList);
-                i1.putExtra("INDEX",i);
+                i1.putExtra("INDEX", i);
                 setResult(Activity.RESULT_OK, i1);
                 someActivityResultLauncher.launch(i1);
             }
@@ -191,6 +191,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDB() {
         listDatabase = new ListDatabase(this);
+        //listDatabase.deleteAllLists(allLists);
+        //addSomeFakeData();
         refreshAllLists();
         //listenDatenbank.deleteList(allLists);
         //listenDatenbank.deleteList(searchListModelById(2),allLists);
@@ -249,19 +251,23 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void addSomeFakeData() {
-        /*listenDatenbank.insertListe(1, "testliste");
-        listenDatenbank.insertListe(2, "zweiteListe");
-        listenDatenbank.insertListe(3, "DÖNERR");
-        listenDatenbank.insertListe(4, "DÖNERR1");
-        listenDatenbank.insertListe(5, "DÖNERR2");
-        listenDatenbank.insertListe(6, "DÖNERR3");*/
-        listDatabase.insertGame(1, "League1", 1.33F, 3, currentList.getId());
-        /*listenDatenbank.insertSpiel(currentList.getGames().size() + 1, "League2", 1.33F, 3, currentList.getId());
-        listenDatenbank.insertSpiel(currentList.getGames().size() + 1, "League3", 1.33F, 3, currentList.getId());
-        listenDatenbank.insertSpiel(currentList.getGames().size() + 1, "League4", 1.33F, 3, currentList.getId());
-        listenDatenbank.insertSpiel(currentList.getGames().size() + 1, "League5", 1.33F, 3, currentList.getId());*/
-        listDatabase.insertCategory(1, 1, "MMOGA");
-        listDatabase.insertTag(1, 1, "Killergame");
+        listDatabase.insertList(1, "Test1");
+        listDatabase.insertList(2, "Test2");
+        listDatabase.insertList(3, "Test3");
+        listDatabase.insertGame(1, "League1", 1.33F, 3, 1);
+        listDatabase.insertGame(2, "League3", 1.33F, 3, 1);
+        listDatabase.insertGame(3, "League4", 1.33F, 3, 1);
+        listDatabase.insertGame(4, "League2", 1.33F, 3, 1);
+        listDatabase.insertGame(1, "CS4", 1.33F, 3, 2);
+        listDatabase.insertGame(2, "CS1", 1.33F, 3, 2);
+        listDatabase.insertGame(3, "CS2", 1.33F, 3, 2);
+        listDatabase.insertGame(4, "CS3", 1.33F, 3, 2);
+        listDatabase.insertGame(1, "WOW1", 1.33F, 3, 3);
+        listDatabase.insertGame(2, "WOW2", 1.33F, 3, 3);
+        listDatabase.insertGame(3, "WOW3", 1.33F, 3, 3);
+        listDatabase.insertGame(4, "WOW4", 1.33F, 3, 3);
+
+
     }
 
     /**
@@ -294,7 +300,6 @@ public class MainActivity extends AppCompatActivity {
         subMenu.getItem(allLists.size()).setIcon(R.drawable.ic_add_black_48dp);
 
     }
-
 
 
     @Override

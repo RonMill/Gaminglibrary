@@ -65,6 +65,8 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
 
         index = i1.getIntExtra("INDEX", -1);
 
+        // Bearbeiten mittels Kontextmenu mit Index X wurde ausgewählt --> Lädt alle Informationen in die Felder
+        // Index -1 == Spielhinzufügen wurde augewählt und somit ist kein Index vorhanden
         if (index != -1) {
             GameModel gameModel = currentList.getGames().get(index);
 
@@ -80,7 +82,6 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
             addGame.setText("Speichern");
         }
 
-        // TODO: Bewertung komma zahlen wegschneiden
         // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
         someActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -139,14 +140,16 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View view) {
         if (view.getId() == addGame.getId() && index == -1) { // check which button got pressed
-            //int review = (int) Integer.parseInt(String.valueOf(gameReview.getText()));
+
+            // verhindert das eine Dezimalbewertung abgegeben werden kann
             String tmp = String.valueOf(gameReview.getText());
             int indexPoint = tmp.indexOf(".");
             if(indexPoint != -1){
                 tmp = tmp.substring(0, indexPoint);
             }
             int review = Integer.parseInt(tmp);
-            Log.d("HS_KL", String.valueOf(review));
+
+            // checkt, ob die Bewertung in der richtigen Range ist --> Falls ja, füge das Spiel in die DB hinzu
             if (review <= 5 && review >= 1) {
                 Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
                 if (imageFilePath != null) { // if user select a picture
@@ -165,14 +168,17 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
             } else {
                 Toast.makeText(this, "Deine Bewertung ist zu hoch! (Range von 1-5)", Toast.LENGTH_SHORT).show();
             }
-        } else if (view.getId() == addGame.getId() && index != -1) {
-            //int review = (int) Integer.parseInt(String.valueOf(gameReview.getText()));
+        } else if (view.getId() == addGame.getId() && index != -1) { // update ein Spiel
+
+            // verhindert das eine Dezimalbewertung abgegeben werden kann
             String tmp = String.valueOf(gameReview.getText());
             int indexPoint = tmp.indexOf(".");
             if(indexPoint != -1){
                 tmp = tmp.substring(0, indexPoint);
             }
             int review = Integer.parseInt(tmp);
+
+            // checkt, ob die Bewertung in der richtigen Range ist --> Falls ja, update das Spiel in der DB
             if (review <= 5 && review >= 1) {
                 Float price = Float.parseFloat(String.valueOf(gamePrice.getText()));
                 currentList.getGames().get(index).setName(gameName.getText().toString());
@@ -193,7 +199,6 @@ public class InsertGameActivity extends AppCompatActivity implements View.OnClic
             } else {
                 Toast.makeText(this, "Deine Bewertung ist zu hoch! (Range von 1-5)", Toast.LENGTH_SHORT).show();
             }
-
         } else if (view.getId() == loadPicture.getId()) {
             Intent intent = new Intent();
             intent.setType("image/*");

@@ -34,11 +34,12 @@ public class MyAdapter extends ArrayAdapter<GameModel> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View listItem = convertView;
-        if (listItem == null) listItem = LayoutInflater.from(mainContext).inflate(R.layout.simple_game_layout,parent,false);
+        if (listItem == null)
+            listItem = LayoutInflater.from(mainContext).inflate(R.layout.simple_game_layout, parent, false);
         GameModel gameModel = gameModelList.get(position);
         ImageView imageView = (ImageView) listItem.findViewById(R.id.MY_GAME_PICTURE);
 
-        if(gameModel.getImageFromPath() != null){
+        if (gameModel.getImageFromPath() != null) {
             Bitmap imageToStore = BitmapFactory.decodeFile(gameModel.getImageFromPath());
             imageView.setImageBitmap(imageToStore);
         } else {
@@ -51,7 +52,7 @@ public class MyAdapter extends ArrayAdapter<GameModel> {
         price.setText(String.valueOf(gameModel.getPrice()) + " €");
         TextView rating = (TextView) listItem.findViewById(R.id.MY_GAME_RATING);
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i< gameModel.getRating();i++)stringBuilder.append("★");
+        for (int i = 0; i < gameModel.getRating(); i++) stringBuilder.append("★");
         rating.setText(stringBuilder);
         return listItem;
     }
